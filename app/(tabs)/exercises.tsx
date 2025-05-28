@@ -5,7 +5,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { ScrollView, StyleSheet } from "react-native";
 const exercises = () => {
   return (
-    <ThemedView style={styles.contents}>
+    <ThemedView>
       <ScrollView>
         <ExercisesHeader />
       </ScrollView>
@@ -13,8 +13,6 @@ const exercises = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  // contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
-});
+const styles = StyleSheet.create({});
 
 export default exercises;
