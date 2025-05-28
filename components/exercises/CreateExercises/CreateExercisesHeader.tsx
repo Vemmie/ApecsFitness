@@ -4,20 +4,16 @@ import { Appbar, withTheme } from "react-native-paper";
 
 type Props = {};
 
-const ExercisesHeader = ({}: Props) => {
+const CreateExercisesHeader = ({}: Props) => {
   const router = useRouter();
   const goBack = () => router.navigate("..");
-
-  const handleCreate = () =>
-    router.navigate("/(tabs)/exercises/createExercise");
 
   return (
     <Appbar.Header>
       <Appbar.BackAction onPress={goBack} />
-      <Appbar.Content title="Exercises" />
-      <Appbar.Action icon="plus" onPress={handleCreate} />
+      <Appbar.Content title="Create new exercise" />
     </Appbar.Header>
   );
 };
 
-export default withTheme(ExercisesHeader);
+export default withTheme(CreateExercisesHeader);

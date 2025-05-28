@@ -3,7 +3,7 @@ import React from "react";
 import ExercisesHeader from "@/components/exercises/ExercisesHeader";
 import { ThemedView } from "@/components/ThemedView";
 import { ScrollView, StyleSheet } from "react-native";
-const exercises = () => {
+const index = () => {
   return (
     <ThemedView>
       <ScrollView>
@@ -15,4 +15,4 @@ const exercises = () => {
 
 const styles = StyleSheet.create({});
 
-export default exercises;
+export default index;
