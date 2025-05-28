@@ -1,23 +1,20 @@
 import React from "react";
 
-import { ThemedText } from "@/components/ThemedText";
+import ExercisesHeader from "@/components/exercises/ExercisesHeader";
 import { ThemedView } from "@/components/ThemedView";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 const exercises = () => {
   return (
     <ThemedView style={styles.contents}>
       <ScrollView>
-        <View style={styles.header}>
-          <ThemedText>Exercises</ThemedText>
-        </View>
+        <ExercisesHeader />
       </ScrollView>
     </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
-  header: { justifyContent: "center", alignContent: "center" },
+  // contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
 });
 
 export default exercises;
