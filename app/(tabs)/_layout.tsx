@@ -55,6 +55,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="tools"
+        options={{
+          title: "tools",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="hammer-wrench" size={28} color="black" />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
