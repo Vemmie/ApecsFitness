@@ -58,9 +58,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="tools"
         options={{
-          title: "tools",
+          title: "Tools",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="hammer-wrench" size={28} color="black" />
+            <MaterialCommunityIcons name="hammer-wrench" size={28} color={color} />
           ),
         }}
       />
