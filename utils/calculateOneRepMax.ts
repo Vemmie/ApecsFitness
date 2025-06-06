@@ -4,11 +4,12 @@
  * @param {Number} reps
  * @returns oneRepMax
  */
-export const calculateOneRepMax = (weight, reps) => {
+export const calculateOneRepMax = (weight: number, reps: number): number => {
   // Exception catch
   if (weight <= 0 || reps <= 0) {
     throw new Error("Weight and/or reps must be positive numbers.");
   }
+
   // No calculations needed at one rep
   if (reps === 1) return weight;
 
