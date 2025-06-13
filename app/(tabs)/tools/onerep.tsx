@@ -1,14 +1,13 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+// Import Paper components
 import {
-  ScrollView,
-  StyleSheet,
+  TextInput as PaperTextInput,
   Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  useTheme, // To access the theme
+} from "react-native-paper";
 import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
 
 const onerep = () => {
@@ -19,6 +18,17 @@ const onerep = () => {
     weight: "",
     reps: "",
   });
+
+  useEffect(() => {
+    // Only attempt calculation if both weight and reps have values
+    if (liftData.weight !== "" && liftData.reps !== "") {
+      handleCalculation();
+    } else {
+      // Clear result and error if inputs are empty
+      setResult(0);
+      setError("");
+    }
+  }, [liftData.weight, liftData.reps]);
 
   // function for on event handler to calculate the max rep
   const handleCalculation = () => {
@@ -36,13 +46,15 @@ const onerep = () => {
     }
   };
 
+  const theme = useTheme();
+
   return (
     <ThemedView style={styles.contents}>
       <ScrollView>
         <View style={styles.header}>
           <ThemedText>One Rep Max Page</ThemedText>
           {/*This is the text input form for both the weight and reps*/}
-          <TextInput
+          <PaperTextInput
             //style needed
             keyboardType="numeric"
             onChangeText={(text) =>
@@ -52,9 +64,9 @@ const onerep = () => {
               }))
             }
             value={liftData.weight.toString()}
-            placeholder="weight"
+            placeholder="Weight"
           />
-          <TextInput
+          <PaperTextInput
             //style needed
             keyboardType="numeric"
             onChangeText={(text) =>
@@ -64,13 +76,9 @@ const onerep = () => {
               }))
             }
             value={liftData.reps.toString()}
-            placeholder="reps"
+            placeholder="Reps"
           />
         </View>
-        {/*Button to call handle calculation*/}
-        <TouchableOpacity onPress={handleCalculation}>
-          <Text>Calculate</Text>
-        </TouchableOpacity>
         {/*This is the conditional display if theres an error or the result*/}
         {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
         {result > 0 && (

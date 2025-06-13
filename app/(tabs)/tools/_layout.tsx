@@ -1,5 +1,20 @@
 import { Stack } from "expo-router";
+import { useTheme } from "react-native-paper";
 
 export default function Layout() {
-    return <Stack />;
+  const theme = useTheme();
+
+  return (
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: theme.colors.surface,
+        },
+        headerTintColor: theme.colors.primary,
+        headerTitleStyle: {
+          color: theme.colors.primary,
+        },
+      }}
+    />
+  );
 }
