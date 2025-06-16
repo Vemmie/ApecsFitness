@@ -5,17 +5,16 @@ import { Platform } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useTheme } from "react-native-paper";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -23,8 +22,11 @@ export default function TabLayout() {
           ios: {
             // Use a transparent background on iOS to show the blur effect
             // position: 'absolute',
+            backgroundColor: "transparent",
           },
-          default: {},
+          default: {
+            backgroundColor: theme.colors.surface,
+          },
         }),
       }}
     >
@@ -60,7 +62,11 @@ export default function TabLayout() {
         options={{
           title: "Tools",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="hammer-wrench" size={28} color={color} />
+            <MaterialCommunityIcons
+              name="hammer-wrench"
+              size={28}
+              color={color}
+            />
           ),
         }}
       />
