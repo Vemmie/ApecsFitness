@@ -13,7 +13,7 @@ import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
 const onerep = () => {
   // states
   const [result, setResult] = useState(0);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [liftData, setLiftData] = useState({
     weight: "",
     reps: "",
@@ -22,11 +22,27 @@ const onerep = () => {
   useEffect(() => {
     // Only attempt calculation if both weight and reps have values
     if (liftData.weight !== "" && liftData.reps !== "") {
+      if (Number(liftData.weight) < 1) {
+        setError(true);
+        setLiftData((prev) => ({
+          ...prev,
+          weight: "",
+        }));
+      }
+      if (Number(liftData.reps) < 1) {
+        setError(true);
+        setLiftData((prev) => ({
+          ...prev,
+          reps: "",
+        }));
+      }
       handleCalculation();
+    } else if (error) {
+      // do nothing if there's an error
     } else {
       // Clear result and error if inputs are empty
       setResult(0);
-      setError("");
+      setError(false);
     }
   }, [liftData.weight, liftData.reps]);
 
@@ -38,10 +54,10 @@ const onerep = () => {
         Number(liftData.reps),
       );
       setResult(oneRep);
-      setError("");
+      setError(false);
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        setError(true);
       }
     }
   };
@@ -56,6 +72,7 @@ const onerep = () => {
           {/*This is the text input form for both the weight and reps*/}
           <PaperTextInput
             //style needed
+            inputMode="numeric"
             keyboardType="numeric"
             onChangeText={(text) =>
               setLiftData((prev) => ({
@@ -68,6 +85,7 @@ const onerep = () => {
           />
           <PaperTextInput
             //style needed
+            inputMode="numeric"
             keyboardType="numeric"
             onChangeText={(text) =>
               setLiftData((prev) => ({
@@ -80,7 +98,11 @@ const onerep = () => {
           />
         </View>
         {/*This is the conditional display if theres an error or the result*/}
-        {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
+        {error === true && (
+          <Text style={{ color: "red" }}>
+            "Weight and/or reps must be positive numbers."
+          </Text>
+        )}
         {result > 0 && (
           <Text>Your estimated 1RM is: {result.toFixed(2)} lbs</Text>
         )}
