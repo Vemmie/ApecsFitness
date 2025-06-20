@@ -1,14 +1,15 @@
 import CreateExercisesHeader from "@/components/exercises/CreateExercises/CreateExercisesHeader";
 import React from "react";
 import { View } from "react-native";
-import { withTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 
 const createExercise = () => {
+  const theme = useTheme();
   return (
-    <View>
+    <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
       <CreateExercisesHeader />
     </View>
   );
 };
 
-export default withTheme(createExercise);
+export default createExercise;
