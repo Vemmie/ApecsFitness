@@ -1,15 +1,18 @@
 import React from "react";
 
 import ExercisesHeader from "@/components/exercises/ExercisesHeader";
-import { ThemedView } from "@/components/ThemedView";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
+
 const index = () => {
+  const theme = useTheme();
+  console.log("color: ", theme.colors.surface);
   return (
-    <ThemedView>
+    <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
       <ScrollView>
         <ExercisesHeader />
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 };
 
