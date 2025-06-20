@@ -9,7 +9,6 @@ import {
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { PaperProvider } from "react-native-paper";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,7 +22,6 @@ export default function RootLayout() {
   }
 
   return (
-
     <PaperProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -31,16 +29,5 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
     </PaperProvider>
-
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </PaperProvider>
-    </ThemeProvider>
-
   );
 }
