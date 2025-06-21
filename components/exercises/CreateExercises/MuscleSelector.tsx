@@ -74,20 +74,6 @@ const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
               removeSelectedMuscle={removeSelectedMuscle}
             />
           ))}
-          {/* <MuscleChip
-            style={styles.chip}
-            muscle="Chest"
-            selectedMuscles={selectedMuscles}
-            addSelectedMuscle={addSelectedMuscle}
-            removeSelectedMuscle={removeSelectedMuscle}
-          />
-          <MuscleChip
-            style={styles.chip}
-            muscle="Back"
-            selectedMuscles={selectedMuscles}
-            addSelectedMuscle={addSelectedMuscle}
-            removeSelectedMuscle={removeSelectedMuscle}
-          /> */}
         </View>
       </View>
     </View>
