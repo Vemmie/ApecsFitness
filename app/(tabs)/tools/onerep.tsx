@@ -20,29 +20,48 @@ const onerep = () => {
   });
 
   useEffect(() => {
-    // Only attempt calculation if both weight and reps have values
-    if (liftData.weight !== "" && liftData.reps !== "") {
-      if (Number(liftData.weight) < 1) {
-        setError(true);
-        setLiftData((prev) => ({
-          ...prev,
-          weight: "",
-        }));
-      }
-      if (Number(liftData.reps) < 1) {
-        setError(true);
-        setLiftData((prev) => ({
-          ...prev,
-          reps: "",
-        }));
-      }
-      handleCalculation();
-    } else if (error) {
-      // do nothing if there's an error
-    } else {
-      // Clear result and error if inputs are empty
+    const numWeight = Number(liftData.weight);
+    const numReps = Number(liftData.reps);
+
+    // ---- Validation Logic ----
+    if (liftData.weight !== "" && (isNaN(numWeight) || numWeight < 1)) {
+      setError(true);
       setResult(0);
+      setLiftData((prev) => ({
+        ...prev,
+        weight: "",
+      }));
+      return;
+    }
+
+    if (liftData.reps !== "" && (isNaN(numReps) || numReps < 1)) {
+      setError(true);
+      setResult(0);
+      setLiftData((prev) => ({
+        ...prev,
+        reps: "",
+      }));
+      return;
+    }
+
+    if (error) {
+      setResult(0);
+    }
+
+    // UI and Calculation based on Validation
+    if (
+      liftData.weight !== "" &&
+      liftData.reps !== "" &&
+      !isNaN(numWeight) &&
+      !isNaN(numReps)
+    ) {
       setError(false);
+      handleCalculation();
+    } else if (
+      (liftData.weight !== "" && liftData.reps === "") ||
+      (liftData.reps !== "" && liftData.weight === "")
+    ) {
+      setResult(0);
     }
   }, [liftData.weight, liftData.reps]);
 
