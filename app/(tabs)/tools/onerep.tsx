@@ -3,6 +3,7 @@ import { ThemedView } from "@/components/ThemedView";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 // Import Paper components
+import { isValidInput } from ",,/../../utils/isValidInput";
 import {
   TextInput as PaperTextInput,
   Text,
@@ -20,11 +21,8 @@ const onerep = () => {
   });
 
   useEffect(() => {
-    const numWeight = Number(liftData.weight);
-    const numReps = Number(liftData.reps);
-
     // ---- Validation Logic ----
-    if (liftData.weight !== "" && (isNaN(numWeight) || numWeight < 1)) {
+    if (isValidInput(liftData.weight)) {
       setError(true);
       setResult(0);
       setLiftData((prev) => ({
@@ -33,8 +31,7 @@ const onerep = () => {
       }));
       return;
     }
-
-    if (liftData.reps !== "" && (isNaN(numReps) || numReps < 1)) {
+    if (isValidInput(liftData.reps)) {
       setError(true);
       setResult(0);
       setLiftData((prev) => ({
@@ -49,12 +46,7 @@ const onerep = () => {
     }
 
     // UI and Calculation based on Validation
-    if (
-      liftData.weight !== "" &&
-      liftData.reps !== "" &&
-      !isNaN(numWeight) &&
-      !isNaN(numReps)
-    ) {
+    if (isValidInput(liftData.weight) && isValidInput(liftData.reps)) {
       setError(false);
       handleCalculation();
     } else if (
@@ -117,7 +109,7 @@ const onerep = () => {
           />
         </View>
         {/*This is the conditional display if theres an error or the result*/}
-        {error === true && (
+        {error && (
           <Text style={{ color: "red" }}>
             "Weight and/or reps must be positive numbers."
           </Text>
