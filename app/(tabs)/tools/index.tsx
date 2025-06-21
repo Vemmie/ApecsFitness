@@ -1,17 +1,17 @@
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link, Stack } from "expo-router";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 
 export default function Tools() {
   const theme = useTheme();
   return (
-    <ThemedView style={styles.contents}>
+    <View style={[styles.contents, { backgroundColor: theme.colors.surface }]}>
       <Stack.Screen options={{ title: "Tools" }} />
       <ScrollView>
-        <ThemedText>Select: </ThemedText>
+        <Text style={[styles.text, { color: theme.colors.primary }]}>
+          Select:
+        </Text>
         <Link href="/(tabs)/tools/onerep" push asChild>
           <Pressable style={{ flexDirection: "row", alignItems: "center" }}>
             <FontAwesome6
@@ -19,16 +19,23 @@ export default function Tools() {
               size={24}
               color={theme.colors.primary}
             />
-            <ThemedText style={{ marginTop: 4, paddingLeft: 4 }}>
+            <Text
+              style={{
+                marginTop: 4,
+                paddingLeft: 10,
+                color: theme.colors.secondary,
+              }}
+            >
               One Rep Calculator
-            </ThemedText>
+            </Text>
           </Pressable>
         </Link>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
+  text: { fontWeight: "bold", paddingBottom: 16, fontSize: 20 },
 });
