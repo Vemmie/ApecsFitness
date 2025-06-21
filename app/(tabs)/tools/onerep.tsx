@@ -3,13 +3,13 @@ import { ThemedView } from "@/components/ThemedView";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 // Import Paper components
-import { isValidInput } from ",,/../../utils/isValidInput";
 import {
   TextInput as PaperTextInput,
   Text,
   useTheme, // To access the theme
 } from "react-native-paper";
 import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
+import { isValidInput } from "../../../utils/isValidInput";
 
 const onerep = () => {
   // states
@@ -22,18 +22,16 @@ const onerep = () => {
 
   useEffect(() => {
     // ---- Validation Logic ----
-    if (isValidInput(liftData.weight)) {
+    if (!isValidInput(liftData.weight)) {
       setError(true);
-      setResult(0);
       setLiftData((prev) => ({
         ...prev,
         weight: "",
       }));
       return;
     }
-    if (isValidInput(liftData.reps)) {
+    if (!isValidInput(liftData.reps)) {
       setError(true);
-      setResult(0);
       setLiftData((prev) => ({
         ...prev,
         reps: "",
@@ -41,18 +39,17 @@ const onerep = () => {
       return;
     }
 
+    // If there's an error reset the result to
     if (error) {
       setResult(0);
     }
 
+    const bothFilled = liftData.weight !== "" && liftData.reps !== "";
     // UI and Calculation based on Validation
-    if (isValidInput(liftData.weight) && isValidInput(liftData.reps)) {
+    if (bothFilled) {
       setError(false);
       handleCalculation();
-    } else if (
-      (liftData.weight !== "" && liftData.reps === "") ||
-      (liftData.reps !== "" && liftData.weight === "")
-    ) {
+    } else {
       setResult(0);
     }
   }, [liftData.weight, liftData.reps]);
