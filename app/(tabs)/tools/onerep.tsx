@@ -9,24 +9,48 @@ import {
   useTheme, // To access the theme
 } from "react-native-paper";
 import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
+import { isValidPositiveNumberInput } from "../../../utils/isValidPositiveNumberInput";
 
 const onerep = () => {
   // states
   const [result, setResult] = useState(0);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [liftData, setLiftData] = useState({
     weight: "",
     reps: "",
   });
 
   useEffect(() => {
-    // Only attempt calculation if both weight and reps have values
-    if (liftData.weight !== "" && liftData.reps !== "") {
+    // ---- Validation Logic ----
+    if (!isValidPositiveNumberInput(liftData.weight)) {
+      setError(true);
+      setLiftData((prev) => ({
+        ...prev,
+        weight: "",
+      }));
+      return;
+    }
+    if (!isValidPositiveNumberInput(liftData.reps)) {
+      setError(true);
+      setLiftData((prev) => ({
+        ...prev,
+        reps: "",
+      }));
+      return;
+    }
+
+    // If there's an error reset the result to
+    if (error) {
+      setResult(0);
+    }
+
+    const bothFilled = liftData.weight !== "" && liftData.reps !== "";
+    // UI and Calculation based on Validation
+    if (bothFilled) {
+      setError(false);
       handleCalculation();
     } else {
-      // Clear result and error if inputs are empty
       setResult(0);
-      setError("");
     }
   }, [liftData.weight, liftData.reps]);
 
@@ -38,10 +62,10 @@ const onerep = () => {
         Number(liftData.reps),
       );
       setResult(oneRep);
-      setError("");
+      setError(false);
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        setError(true);
       }
     }
   };
@@ -56,6 +80,7 @@ const onerep = () => {
           {/*This is the text input form for both the weight and reps*/}
           <PaperTextInput
             //style needed
+            inputMode="numeric"
             keyboardType="numeric"
             onChangeText={(text) =>
               setLiftData((prev) => ({
@@ -68,6 +93,7 @@ const onerep = () => {
           />
           <PaperTextInput
             //style needed
+            inputMode="numeric"
             keyboardType="numeric"
             onChangeText={(text) =>
               setLiftData((prev) => ({
@@ -80,7 +106,11 @@ const onerep = () => {
           />
         </View>
         {/*This is the conditional display if theres an error or the result*/}
-        {error !== "" && <Text style={{ color: "red" }}>{error}</Text>}
+        {error && (
+          <Text style={{ color: "red" }}>
+            "Weight and/or reps must be positive numbers."
+          </Text>
+        )}
         {result > 0 && (
           <Text>Your estimated 1RM is: {result.toFixed(2)} lbs</Text>
         )}
