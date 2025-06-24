@@ -1,4 +1,4 @@
-export function isValidInput(userInput: string): boolean {
+export function isValidPositiveNumberInput(userInput: string): boolean {
   if (userInput === "") {
     return true; // Empty string is explicitly valid
   }
