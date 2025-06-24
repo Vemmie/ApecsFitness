@@ -9,7 +9,7 @@ import {
   useTheme, // To access the theme
 } from "react-native-paper";
 import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
-import { isValidInput } from "../../../utils/isValidInput";
+import { isValidPositiveNumberInput } from "../../../utils/isValidPositiveNumberInput";
 
 const onerep = () => {
   // states
@@ -22,7 +22,7 @@ const onerep = () => {
 
   useEffect(() => {
     // ---- Validation Logic ----
-    if (!isValidInput(liftData.weight)) {
+    if (!isValidPositiveNumberInput(liftData.weight)) {
       setError(true);
       setLiftData((prev) => ({
         ...prev,
@@ -30,7 +30,7 @@ const onerep = () => {
       }));
       return;
     }
-    if (!isValidInput(liftData.reps)) {
+    if (!isValidPositiveNumberInput(liftData.reps)) {
       setError(true);
       setLiftData((prev) => ({
         ...prev,
