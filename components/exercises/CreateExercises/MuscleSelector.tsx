@@ -50,31 +50,22 @@ const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
       <Text style={{ fontSize: 16, color: theme.colors.primary }}>Muscles</Text>
       <View
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           flexGrow: 1,
           flexWrap: "wrap",
           gap: 8,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            flexGrow: 1,
-            flexWrap: "wrap",
-            gap: 8,
-          }}
-        >
-          {Muscles.map((muscle) => (
-            <MuscleChip
-              key={muscle}
-              style={styles.chip}
-              muscle={muscle}
-              selectedMuscles={selectedMuscles}
-              addSelectedMuscle={addSelectedMuscle}
-              removeSelectedMuscle={removeSelectedMuscle}
-            />
-          ))}
-        </View>
+        {Muscles.map((muscle) => (
+          <MuscleChip
+            key={muscle}
+            style={styles.chip}
+            muscle={muscle}
+            selectedMuscles={selectedMuscles}
+            addSelectedMuscle={addSelectedMuscle}
+            removeSelectedMuscle={removeSelectedMuscle}
+          />
+        ))}
       </View>
     </View>
   );

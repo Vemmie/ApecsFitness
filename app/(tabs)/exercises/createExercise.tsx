@@ -1,6 +1,7 @@
 import CreateExercisesHeader from "@/components/exercises/CreateExercises/CreateExercisesHeader";
 import EquipmentSelector from "@/components/exercises/CreateExercises/EquipmentSelector";
 import MuscleSelector from "@/components/exercises/CreateExercises/MuscleSelector";
+import EquipmentEnum from "@/constants/EquipmentEnum";
 import RecordType from "@/constants/RecordType";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -9,7 +10,7 @@ import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
 const createExercise = () => {
   const theme = useTheme();
   const [exerciseName, setExerciseName] = React.useState<string>("");
-  const [equipment, setEquipment] = React.useState<string>("");
+  const [equipment, setEquipment] = React.useState<EquipmentEnum>();
   const [selectedMuscles, setSelectedMuscles] = React.useState<Set<string>>(
     new Set(),
   );
@@ -36,7 +37,7 @@ const createExercise = () => {
           />
 
           <EquipmentSelector
-            equipment={equipment}
+            selectedEquipment={equipment}
             setEquipment={setEquipment}
           />
 

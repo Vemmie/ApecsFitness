@@ -1,12 +1,13 @@
+import EquipmentEnum from "@/constants/EquipmentEnum";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Chip } from "react-native-paper";
 
 type Props = {
   style: StyleProp<ViewStyle>;
-  equipment: string;
-  selectedEquipment: string;
-  setEquipment: (equipment: string) => void;
+  equipment: EquipmentEnum;
+  selectedEquipment?: EquipmentEnum;
+  setEquipment: (equipment: EquipmentEnum) => void;
 };
 
 const EquipmentChip = ({
@@ -15,17 +16,24 @@ const EquipmentChip = ({
   selectedEquipment,
   setEquipment,
 }: Props) => {
+  console.log(
+    "EquipmentChip rendered with equipment:",
+    equipment,
+    "selectedEquipment:",
+    selectedEquipment,
+  );
   return (
     <Chip
       style={style}
       mode="outlined"
-      selected={selectedEquipment === equipment}
+      selected={selectedEquipment == equipment}
       showSelectedOverlay={true}
       showSelectedCheck={false}
       onPress={() => {
         selectedEquipment == equipment
-          ? setEquipment("")
+          ? setEquipment(EquipmentEnum.NONE) // Deselect if already selected
           : setEquipment(equipment);
+        console.log(`Selected equipment: ${equipment}`);
       }}
     >
       {equipment}
