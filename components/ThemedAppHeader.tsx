@@ -1,7 +1,7 @@
 import React from "react";
 import { Appbar, useTheme } from "react-native-paper";
 
-// Deinfes the props that AppHEader will accept
+// Deinfes the props that AppHeader will accept
 type ThemedAppHeaderProps = {
   title: string;
   showBackButton?: boolean; // optional
