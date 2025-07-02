@@ -1,14 +1,15 @@
+import ThemedAppHeader from "@/components/ThemedAppHeader";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Link, Stack } from "expo-router";
+import { Link } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
 export default function Tools() {
   const theme = useTheme();
   return (
-    <View style={[styles.contents, { backgroundColor: theme.colors.surface }]}>
-      <Stack.Screen options={{ title: "Tools" }} />
-      <ScrollView>
+    <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
+      <ThemedAppHeader title="Tools" showBackButton={false} />
+      <ScrollView style={styles.contents}>
         <Text style={[styles.text, { color: theme.colors.primary }]}>
           Select:
         </Text>
@@ -37,5 +38,5 @@ export default function Tools() {
 
 const styles = StyleSheet.create({
   contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
-  text: { fontWeight: "bold", paddingBottom: 16, fontSize: 20 },
+  text: { fontWeight: "bold", paddingBottom: 16, fontSize: 24 },
 });

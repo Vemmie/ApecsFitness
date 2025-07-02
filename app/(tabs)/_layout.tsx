@@ -45,7 +45,7 @@ export default function TabLayout() {
         options={{
           title: "Exercises",
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="dumbbell" size={28} color={color} />
+            <FontAwesome5 name="dumbbell" size={24} color={color} />
           ),
         }}
       />
