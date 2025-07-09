@@ -1,6 +1,6 @@
 import React from "react";
 
-import ExercisesHeader from "@/components/exercises/ExercisesHeader";
+import ThemedAppHeader from "@/components/ThemedAppHeader";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
@@ -9,7 +9,7 @@ const index = () => {
   return (
     <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
       <ScrollView>
-        <ExercisesHeader />
+        <ThemedAppHeader title="Exercises" showBackButton={false} />
       </ScrollView>
     </View>
   );

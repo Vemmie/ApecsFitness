@@ -1,5 +1,3 @@
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 // Import Paper components
@@ -73,10 +71,19 @@ const onerep = () => {
   const theme = useTheme();
 
   return (
-    <ThemedView style={styles.contents}>
+    <View
+      style={[
+        {
+          backgroundColor: theme.colors.surface,
+        },
+        styles.contents,
+      ]}
+    >
       <ScrollView>
         <View style={styles.header}>
-          <ThemedText>One Rep Max Page</ThemedText>
+          <Text style={[{ color: theme.colors.primary }, styles.text]}>
+            One Rep Max Page
+          </Text>
           {/*This is the text input form for both the weight and reps*/}
           <PaperTextInput
             //style needed
@@ -115,13 +122,14 @@ const onerep = () => {
           <Text>Your estimated 1RM is: {result.toFixed(2)} lbs</Text>
         )}
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
   header: { justifyContent: "center", alignContent: "center" },
+  text: { fontWeight: "bold", paddingBottom: 16 },
 });
 
 export default onerep;

@@ -1,4 +1,5 @@
-import CreateExercisesHeader from "@/components/exercises/CreateExercises/CreateExercisesHeader";
+import ThemedAppHeader from "@/components/ThemedAppHeader";
+import { useRouter } from "expo-router";
 import EquipmentSelector from "@/components/exercises/CreateExercises/EquipmentSelector";
 import MuscleSelector from "@/components/exercises/CreateExercises/MuscleSelector";
 import EquipmentEnum from "@/constants/EquipmentEnum";
@@ -9,6 +10,8 @@ import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
 
 const createExercise = () => {
   const theme = useTheme();
+  const router = useRouter();
+  const goBack = () => router.navigate("..");
   const [exerciseName, setExerciseName] = React.useState<string>("");
   const [equipment, setEquipment] = React.useState<EquipmentEnum>();
   const [selectedMuscles, setSelectedMuscles] = React.useState<Set<string>>(
@@ -20,7 +23,11 @@ const createExercise = () => {
 
   return (
     <View style={{ backgroundColor: theme.colors.surface, flexShrink: 1 }}>
-      <CreateExercisesHeader />
+      <ThemedAppHeader
+        title="Create Exercise" // The title for this screen
+        showBackButton={true} // Show the back button
+        onBackPress={goBack} // Pass the specific back action
+      />
 
       <ScrollView>
         <View style={{ padding: 16, gap: 24 }}>

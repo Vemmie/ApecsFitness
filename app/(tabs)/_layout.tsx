@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useTheme } from "react-native-paper";
 
@@ -44,7 +45,7 @@ export default function TabLayout() {
         options={{
           title: "Exercises",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="dumbbell.fill" color={color} />
+            <FontAwesome5 name="dumbbell" size={28} color={color} />
           ),
         }}
       />
