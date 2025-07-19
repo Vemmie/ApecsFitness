@@ -1,9 +1,10 @@
-import ThemedAppHeader from "@/components/ThemedAppHeader";
-import { useRouter } from "expo-router";
 import EquipmentSelector from "@/components/exercises/CreateExercises/EquipmentSelector";
 import MuscleSelector from "@/components/exercises/CreateExercises/MuscleSelector";
+import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
+import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
+import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
@@ -14,7 +15,7 @@ const createExercise = () => {
   const goBack = () => router.navigate("..");
   const [exerciseName, setExerciseName] = React.useState<string>("");
   const [equipment, setEquipment] = React.useState<EquipmentEnum>();
-  const [selectedMuscles, setSelectedMuscles] = React.useState<Set<string>>(
+  const [selectedMuscles, setSelectedMuscles] = React.useState<Set<MuscleEnum>>(
     new Set(),
   );
   const [recordType, setRecordType] = React.useState<RecordType>(

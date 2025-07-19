@@ -1,13 +1,14 @@
+import MuscleEnum from "@/constants/MuscleEnum";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Chip } from "react-native-paper";
 
 type Props = {
   style: StyleProp<ViewStyle>;
-  muscle: string;
-  selectedMuscles: Set<string>;
-  addSelectedMuscle: (muscles: string) => void;
-  removeSelectedMuscle: (muscles: string) => void;
+  muscle: MuscleEnum;
+  selectedMuscles: Set<MuscleEnum>;
+  addSelectedMuscle: (muscles: MuscleEnum) => void;
+  removeSelectedMuscle: (muscles: MuscleEnum) => void;
 };
 
 const MuscleChip = ({
