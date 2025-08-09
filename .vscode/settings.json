@@ -15,5 +15,6 @@
   "vs-code-prettier-eslint.prettierLast": true,
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  } // set as "true" to run 'prettier' last not first
+  }, // set as "true" to run 'prettier' last not first
+  "typescript.preferences.includePackageJsonAutoImports": "on"
 }

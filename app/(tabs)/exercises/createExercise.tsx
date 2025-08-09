@@ -4,8 +4,9 @@ import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
+import { connectToDatabase, createTables } from "@/database/sqliteUtils";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
 
@@ -21,6 +22,19 @@ const createExercise = () => {
   const [recordType, setRecordType] = React.useState<RecordType>(
     RecordType.WEIGHT_AND_REPS,
   );
+
+  const loadData = useCallback(async () => {
+    try {
+      const db = await connectToDatabase();
+      await createTables(db);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <View style={{ backgroundColor: theme.colors.surface, flexShrink: 1 }}>
