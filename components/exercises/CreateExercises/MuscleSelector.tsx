@@ -1,35 +1,18 @@
+import MuscleEnum from "@/constants/MuscleEnum";
 import React from "react";
-import { useTheme } from "react-native-paper";
-
 import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "react-native-paper";
 import MuscleChip from "./MuscleChip";
 
 type Props = {
-  selectedMuscles: Set<string>;
-  setSelectedMuscles: React.Dispatch<React.SetStateAction<Set<string>>>;
+  selectedMuscles: Set<MuscleEnum>;
+  setSelectedMuscles: React.Dispatch<React.SetStateAction<Set<MuscleEnum>>>;
 };
-
-const Muscles = [
-  "Chest",
-  "Upper Back",
-  "Lats",
-  "Lower Back",
-  "Shoulders",
-  "Forearms",
-  "Biceps",
-  "Triceps",
-  "Quads",
-  "Hamstrings",
-  "Calves",
-  "Glutes",
-  "Abs",
-  "Hip Flexors",
-];
 
 const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
   const theme = useTheme();
 
-  const addSelectedMuscle = (muscle: string) => {
+  const addSelectedMuscle = (muscle: MuscleEnum) => {
     setSelectedMuscles((prev) => {
       const newMuscles = new Set(prev);
       newMuscles.add(muscle);
@@ -37,7 +20,7 @@ const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
     });
   };
 
-  const removeSelectedMuscle = (muscle: string) => {
+  const removeSelectedMuscle = (muscle: MuscleEnum) => {
     setSelectedMuscles((prev) => {
       const newMuscles = new Set(prev);
       newMuscles.delete(muscle);
@@ -56,7 +39,7 @@ const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
           gap: 8,
         }}
       >
-        {Muscles.map((muscle) => (
+        {Object.values(MuscleEnum).map((muscle) => (
           <MuscleChip
             key={muscle}
             style={styles.chip}
