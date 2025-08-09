@@ -1,19 +1,14 @@
 import { Stack } from "expo-router";
-import { useTheme } from "react-native-paper";
 
-export default function Layout() {
-  const theme = useTheme();
+export const unstable_settings = {
+  initialRouteName: "index",
+};
 
+export default function ExercisesLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.surface,
-        },
-        headerTintColor: theme.colors.primary,
-        headerTitleStyle: {
-          color: theme.colors.primary,
-        },
+        headerShown: false,
       }}
     />
   );
