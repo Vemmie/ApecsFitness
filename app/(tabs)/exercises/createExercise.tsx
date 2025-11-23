@@ -85,7 +85,7 @@ const createExercise = () => {
             />
           </RadioButton.Group>
         </View>
-        <View style={{ paddingBottom: 10 }}>
+        <View style={{ paddingBottom: 10, paddingHorizontal: 16 }}>
           <Button
             mode="contained"
             onPress={async () => {
