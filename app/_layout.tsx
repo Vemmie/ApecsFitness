@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import React from "react";
 import {
   MD3DarkTheme as DarkTheme,
   MD3LightTheme as DefaultTheme,
@@ -8,7 +9,9 @@ import {
 } from "react-native-paper";
 import "react-native-reanimated";
 
+import { migrateDbIfNeeded } from "@/database/sqliteUtils";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { SQLiteProvider } from "expo-sqlite";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,11 +26,17 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <SQLiteProvider
+        databaseName="apecs.db"
+        onInit={migrateDbIfNeeded}
+        useSuspense
+      >
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </SQLiteProvider>
     </PaperProvider>
   );
 }

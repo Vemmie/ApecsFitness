@@ -7,10 +7,15 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { useSQLiteContext } from "expo-sqlite";
 import { useTheme } from "react-native-paper";
 
 export default function TabLayout() {
   const theme = useTheme();
+
+  const db = useSQLiteContext();
+  useDrizzleStudio(db);
 
   return (
     <Tabs

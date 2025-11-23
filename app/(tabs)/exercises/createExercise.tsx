@@ -4,14 +4,24 @@ import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
+import { insertExercise } from "@/database/Exercises";
 import { useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
+import {
+  Button,
+  RadioButton,
+  Text,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
 
 const createExercise = () => {
   const theme = useTheme();
   const router = useRouter();
+
+  const db = useSQLiteContext();
   const goBack = () => router.navigate("..");
   const [exerciseName, setExerciseName] = React.useState<string>("");
   const [equipment, setEquipment] = React.useState<EquipmentEnum>();
@@ -30,8 +40,8 @@ const createExercise = () => {
         onBackPress={goBack} // Pass the specific back action
       />
 
-      <ScrollView>
-        <View style={{ padding: 16, gap: 24 }}>
+      <ScrollView style={{ flexShrink: 1 }}>
+        <View style={{ padding: 16, gap: 24, flexShrink: 1 }}>
           <TextInput
             label="Exercise Name"
             value={exerciseName}
@@ -74,6 +84,21 @@ const createExercise = () => {
               style={styles.radioButtonItem}
             />
           </RadioButton.Group>
+        </View>
+        <View style={{ paddingBottom: 10, paddingHorizontal: 16 }}>
+          <Button
+            mode="contained"
+            onPress={async () => {
+              const result = await insertExercise(db, {
+                name: exerciseName,
+                muscle: Array.from(selectedMuscles)[0] || MuscleEnum.ABS,
+                equipment: equipment || EquipmentEnum.OTHER,
+                recordType: recordType,
+              });
+            }}
+          >
+            Create
+          </Button>
         </View>
       </ScrollView>
     </View>
