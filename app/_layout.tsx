@@ -9,6 +9,7 @@ import {
 } from "react-native-paper";
 import "react-native-reanimated";
 
+import DrizzleStudioSetup from "@/components/drizzlestudio/DrizzleStudioSetup";
 import { migrateDbIfNeeded } from "@/database/sqliteUtils";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
@@ -31,6 +32,7 @@ export default function RootLayout() {
         onInit={migrateDbIfNeeded}
         useSuspense
       >
+        <DrizzleStudioSetup />
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
