@@ -30,7 +30,6 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     `);
     await db.execAsync(createExercisesTableQuery);
     await db.execAsync(createExerciseLogsTableQuery);
-    await db.exec;
     currentDbVersion = 1;
   }
   // if (currentDbVersion === 1) {
