@@ -4,15 +4,24 @@ import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
-import { connectToDatabase, createTables } from "@/database/sqliteUtils";
+import { fetchAllExercises, insertExercise } from "@/database/Exercises";
 import { useRouter } from "expo-router";
-import React, { useCallback, useEffect } from "react";
+import { useSQLiteContext } from "expo-sqlite";
+import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { RadioButton, Text, TextInput, useTheme } from "react-native-paper";
+import {
+  Button,
+  RadioButton,
+  Text,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
 
 const createExercise = () => {
   const theme = useTheme();
   const router = useRouter();
+
+  const db = useSQLiteContext();
   const goBack = () => router.navigate("..");
   const [exerciseName, setExerciseName] = React.useState<string>("");
   const [equipment, setEquipment] = React.useState<EquipmentEnum>();
@@ -23,19 +32,6 @@ const createExercise = () => {
     RecordType.WEIGHT_AND_REPS,
   );
 
-  const loadData = useCallback(async () => {
-    try {
-      const db = await connectToDatabase();
-      await createTables(db);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
   return (
     <View style={{ backgroundColor: theme.colors.surface, flexShrink: 1 }}>
       <ThemedAppHeader
@@ -44,8 +40,8 @@ const createExercise = () => {
         onBackPress={goBack} // Pass the specific back action
       />
 
-      <ScrollView>
-        <View style={{ padding: 16, gap: 24 }}>
+      <ScrollView style={{ flexShrink: 1 }}>
+        <View style={{ padding: 16, gap: 24, flexShrink: 1 }}>
           <TextInput
             label="Exercise Name"
             value={exerciseName}
@@ -88,6 +84,38 @@ const createExercise = () => {
               style={styles.radioButtonItem}
             />
           </RadioButton.Group>
+        </View>
+        <View style={{ paddingBottom: 10 }}>
+          <Button
+            mode="contained"
+            onPress={async () => {
+              console.log("Creating exercise with:", {
+                exerciseName,
+                selectedMuscles: Array.from(selectedMuscles),
+                equipment,
+                recordType,
+              });
+              const result = await insertExercise(db, {
+                name: exerciseName,
+                muscle: Array.from(selectedMuscles)[0] || MuscleEnum.ABS,
+                equipment: equipment || EquipmentEnum.OTHER,
+                recordType: recordType,
+              });
+              console.log("Insert result:", result);
+            }}
+          >
+            Create
+          </Button>
+          <Button
+            mode="contained"
+            onPress={async () => {
+              console.log("Fetching all exercises");
+              const result = await fetchAllExercises(db);
+              console.log("Fetched exercises:", result);
+            }}
+          >
+            Fetch
+          </Button>
         </View>
       </ScrollView>
     </View>
