@@ -27,7 +27,6 @@ const EquipmentChip = ({
         selectedEquipment == equipment
           ? setEquipment(EquipmentEnum.NONE) // Deselect if already selected
           : setEquipment(equipment);
-        console.debug(`Selected equipment: ${equipment}`);
       }}
     >
       {equipment}
