@@ -89,19 +89,12 @@ const createExercise = () => {
           <Button
             mode="contained"
             onPress={async () => {
-              console.log("Creating exercise with:", {
-                exerciseName,
-                selectedMuscles: Array.from(selectedMuscles),
-                equipment,
-                recordType,
-              });
               const result = await insertExercise(db, {
                 name: exerciseName,
                 muscle: Array.from(selectedMuscles)[0] || MuscleEnum.ABS,
                 equipment: equipment || EquipmentEnum.OTHER,
                 recordType: recordType,
               });
-              console.log("Insert result:", result);
             }}
           >
             Create
@@ -109,9 +102,7 @@ const createExercise = () => {
           <Button
             mode="contained"
             onPress={async () => {
-              console.log("Fetching all exercises");
               const result = await fetchAllExercises(db);
-              console.log("Fetched exercises:", result);
             }}
           >
             Fetch

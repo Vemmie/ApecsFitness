@@ -16,12 +16,6 @@ const EquipmentChip = ({
   selectedEquipment,
   setEquipment,
 }: Props) => {
-  console.log(
-    "EquipmentChip rendered with equipment:",
-    equipment,
-    "selectedEquipment:",
-    selectedEquipment,
-  );
   return (
     <Chip
       style={style}
@@ -33,7 +27,7 @@ const EquipmentChip = ({
         selectedEquipment == equipment
           ? setEquipment(EquipmentEnum.NONE) // Deselect if already selected
           : setEquipment(equipment);
-        console.log(`Selected equipment: ${equipment}`);
+        console.debug(`Selected equipment: ${equipment}`);
       }}
     >
       {equipment}

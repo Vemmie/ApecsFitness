@@ -35,11 +35,8 @@ export const insertExercise = async (
   exercise: Exercise,
 ) => {
   const { name, muscle, equipment, recordType } = exercise;
-  console.log("Insert params are: ", name, muscle, equipment, recordType);
-  console.log("DB IS: ", db);
   try {
     const insertStatment = await db.prepareAsync(insertExerciseQuery);
-    console.log("Preparing insert statement for exercise:", insertStatment);
     let result;
     try {
       result = await insertStatment.executeAsync({
@@ -48,16 +45,15 @@ export const insertExercise = async (
         $equipment: equipment,
         $recordType: recordType,
       });
-      console.log("Insert result:", result);
     } catch (e) {
-      console.log("Error inserting exercise:", e);
+      console.error("Error inserting exercise:", e);
     } finally {
       await insertStatment.finalizeAsync();
     }
 
     return result;
   } catch (e) {
-    console.log("Error preparing insert statement:", e);
+    console.error("Error preparing insert statement:", e);
   }
 };
 
@@ -66,9 +62,8 @@ export const fetchAllExercises = async (db: SQLiteDatabase) => {
   let result;
   try {
     result = await selectStatement.executeAsync();
-    console.log("Fetched exercises:", result);
   } catch (e) {
-    console.log("Error fetching exercises:", e);
+    console.error("Error fetching exercises:", e);
   } finally {
     await selectStatement.finalizeAsync();
   }
