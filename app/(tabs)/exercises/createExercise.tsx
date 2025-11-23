@@ -4,7 +4,7 @@ import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
-import { fetchAllExercises, insertExercise } from "@/database/Exercises";
+import { insertExercise } from "@/database/Exercises";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React from "react";
@@ -98,14 +98,6 @@ const createExercise = () => {
             }}
           >
             Create
-          </Button>
-          <Button
-            mode="contained"
-            onPress={async () => {
-              const result = await fetchAllExercises(db);
-            }}
-          >
-            Fetch
           </Button>
         </View>
       </ScrollView>
