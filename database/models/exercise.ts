@@ -44,6 +44,20 @@ function selectExercisesFilteredQuery(
   return { query, params };
 }
 
+const updateExerciseQuery = `
+  UPDATE ${tableName}
+  SET name = $name,
+      muscle = $muscle,
+      equipment = $equipment,
+      record_type = $recordType
+  WHERE id = $id;
+`;
+
+const deleteExerciseQuery = `
+  DELETE FROM ${tableName}
+  WHERE id = $id
+`;
+
 // Model functions
 export const insertExercise = async (
   db: SQLiteDatabase,
@@ -74,6 +88,59 @@ export const fetchExercisesFiltered = async (
   const stmt = await db.prepareAsync(query);
   try {
     return await stmt.executeAsync(params);
+  } finally {
+    await stmt.finalizeAsync();
+  }
+};
+
+export const updateExercise = async (
+  db: SQLiteDatabase,
+  exercise: Partial<Exercise> & { id: number },
+) => {
+  const fields: string[] = [];
+  const params: Record<string, any> = { $id: exercise.id };
+
+  if (exercise.name !== undefined) {
+    fields.push("name = $name");
+    params["$name"] = exercise.name;
+  }
+
+  if (exercise.muscle !== undefined) {
+    fields.push("muscle = $muscle");
+    params["$muscle"] = exercise.muscle;
+  }
+
+  if (exercise.equipment !== undefined) {
+    fields.push("equipment = $equipment");
+    params["$equipment"] = exercise.equipment;
+  }
+
+  if (exercise.recordType !== undefined) {
+    fields.push("record_type = $recordType");
+    params["$recordType"] = exercise.recordType;
+  }
+
+  // No updates → ignore
+  if (fields.length === 0) return;
+
+  const query = `
+    UPDATE Exercises
+    SET ${fields.join(", ")}
+    WHERE id = $id
+  `;
+
+  const stmt = await db.prepareAsync(query);
+  try {
+    return await stmt.executeAsync(params);
+  } finally {
+    await stmt.finalizeAsync();
+  }
+};
+
+export const deleteExercise = async (db: SQLiteDatabase, id: number) => {
+  const stmt = await db.prepareAsync(deleteExerciseQuery);
+  try {
+    return await stmt.executeAsync({ $id: id });
   } finally {
     await stmt.finalizeAsync();
   }
