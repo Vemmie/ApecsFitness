@@ -1,39 +1,31 @@
 import { SQLiteDatabase } from "expo-sqlite";
-import { createExercisesTableQuery } from "./Exercises";
+import { migrationsList } from "./migrations/migrationList";
 
 // export const db = await openDatabaseAsync("apecs");
-const createExerciseLogsTableQuery = `
-    CREATE TABLE IF NOT EXISTS ExerciseLogs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        exerciseId INTEGER,
-        sets INTEGER,
-        reps INTEGER,
-        weight REAL,
-        date TEXT,
-        FOREIGN KEY (exerciseId) REFERENCES Exercises(id)
-    )
-    `;
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
-  const DATABASE_VERSION = 1;
+  // Reset version for testing
+  /*
+  let currVersion = 0;
+  console.debug("Reset DB to version 0");
+ */
+
   const result = await db.getFirstAsync<{ user_version: number }>(
     "PRAGMA user_version",
   );
-  console.debug("Current DB version:", result?.user_version);
-  let currentDbVersion = result?.user_version ?? 0;
-  if (currentDbVersion >= DATABASE_VERSION) {
-    return;
+
+  let currVersion = result?.user_version ?? 0;
+
+  //let currVersion = result?.user_version ?? 0;
+  console.debug("Current DB version:", currVersion);
+
+  for (const migration of migrationsList) {
+    if (currVersion < migration.version) {
+      console.debug(`Applying migration version ${migration.version}...`);
+      await migration.migrate(db);
+      currVersion = migration.version;
+    }
   }
-  if (currentDbVersion === 0) {
-    await db.execAsync(`
-        PRAGMA journal_mode = 'wal';
-    `);
-    await db.execAsync(createExercisesTableQuery);
-    await db.execAsync(createExerciseLogsTableQuery);
-    currentDbVersion = 1;
-  }
-  // if (currentDbVersion === 1) {
-  //   Add more migrations
-  // }
-  await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
+  // Update DB version after each migration
+  await db.execAsync(`PRAGMA user_version = ${currVersion}`);
 }
