@@ -46,18 +46,11 @@ const Index = () => {
     try {
       setLoading(true);
 
-      let data: Exercise[];
-      if (selectedMuscle || selectedEquipment) {
-        // If any filter is selected, pass them
-        data = await fetchExercisesFiltered(
-          db,
-          selectedMuscle,
-          selectedEquipment,
-        );
-      } else {
-        // No filters selected, fetch all
-        data = await fetchExercisesFiltered(db);
-      }
+      const data = await fetchExercisesFiltered(
+        db,
+        selectedMuscle,
+        selectedEquipment,
+      );
 
       setExercises(data);
     } catch (error) {

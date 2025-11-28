@@ -1,8 +1,7 @@
 // db/exercises.ts
 import EquipmentEnum from "@/constants/EquipmentEnum";
-import { SQLiteDatabase } from "expo-sqlite";
 import MuscleEnum from "@/constants/MuscleEnum";
-import RecordType from "@/constants/RecordType";
+import { SQLiteDatabase } from "expo-sqlite";
 
 const tableName = "Exercises";
 
@@ -28,12 +27,12 @@ function selectExercisesFilteredQuery(
   const params: Record<string, any> = {};
   const conditions: string[] = [];
 
-  if (muscle) {
+  if (muscle != null) {
     conditions.push(`muscle = $muscle`);
     params["$muscle"] = muscle;
   }
 
-  if (equipment) {
+  if (equipment != null && equipment !== EquipmentEnum.NONE) {
     conditions.push(`equipment = $equipment`);
     params["$equipment"] = equipment;
   }
@@ -42,7 +41,7 @@ function selectExercisesFilteredQuery(
     query += ` WHERE ` + conditions.join(" AND ");
   }
 
-  return { query, params };
+  return { query, params }; // always return a params object
 }
 
 const updateExerciseQuery = `
@@ -86,11 +85,12 @@ export const fetchExercisesFiltered = async (
 ) => {
   const { query, params } = selectExercisesFilteredQuery(muscle, equipment);
   try {
-    const result = await db.getAllAsync(query, params);
+    // Always pass a params object
+    const result = await db.getAllAsync(query, params ?? {});
     return result as Exercise[];
   } catch (error) {
     console.error("Error fetching exercises:", error);
-    throw error; // Re-throw so caller can handle it
+    throw error;
   }
 };
 
