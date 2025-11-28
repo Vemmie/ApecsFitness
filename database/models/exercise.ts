@@ -1,7 +1,8 @@
 // db/exercises.ts
 import EquipmentEnum from "@/constants/EquipmentEnum";
-import MuscleEnum from "@/constants/MuscleEnum";
 import { SQLiteDatabase } from "expo-sqlite";
+import MuscleEnum from "@/constants/MuscleEnum";
+import RecordType from "@/constants/RecordType";
 
 const tableName = "Exercises";
 
@@ -84,12 +85,12 @@ export const fetchExercisesFiltered = async (
   equipment?: EquipmentEnum,
 ) => {
   const { query, params } = selectExercisesFilteredQuery(muscle, equipment);
-
-  const stmt = await db.prepareAsync(query);
   try {
-    return await stmt.executeAsync(params);
-  } finally {
-    await stmt.finalizeAsync();
+    const result = await db.getAllAsync(query, params);
+    return result as Exercise[];
+  } catch (error) {
+    console.error("Error fetching exercises:", error);
+    throw error; // Re-throw so caller can handle it
   }
 };
 

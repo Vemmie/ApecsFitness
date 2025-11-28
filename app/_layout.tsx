@@ -14,6 +14,8 @@ import { migrateDbIfNeeded } from "@/database/sqliteUtils";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -27,18 +29,20 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SQLiteProvider
-        databaseName="apecs.db"
-        onInit={migrateDbIfNeeded}
-        useSuspense
-      >
-        <DrizzleStudioSetup />
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </SQLiteProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SQLiteProvider
+          databaseName="apecs.db"
+          onInit={migrateDbIfNeeded}
+          useSuspense
+        >
+          <DrizzleStudioSetup />
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </SQLiteProvider>
+      </GestureHandlerRootView>
     </PaperProvider>
   );
 }
