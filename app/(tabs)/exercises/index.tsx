@@ -1,11 +1,10 @@
 import FilterExerciseSelector from "@/components/exercises/FilterExercises/FilterExerciseSelector";
 import ThemedAppHeader from "@/components/ThemedAppHeader";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,17 +16,22 @@ import { List, useTheme } from "react-native-paper";
 
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
+import { Exercise } from "@/database/models/exercise";
+
+// Hooks
 import {
-  deleteExercise,
-  Exercise,
-  fetchExercisesFiltered,
-} from "@/database/models/exercise";
+  handleCreate,
+  handleDeleteExercise,
+  handleViewExercise,
+  loadExercises,
+} from "@/hooks/useExercises";
 
 const Index = () => {
-  const router = useRouter();
+  // db and Theme
   const theme = useTheme();
   const db = useSQLiteContext();
 
+  // States
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,62 +46,17 @@ const Index = () => {
   // Accordion state
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const loadExercises = async () => {
-    try {
-      setLoading(true);
-
-      const data = await fetchExercisesFiltered(
+  useFocusEffect(
+    React.useCallback(() => {
+      loadExercises(
         db,
         selectedMuscle,
         selectedEquipment,
+        setExercises,
+        setLoading,
       );
-
-      setExercises(data);
-    } catch (error) {
-      console.error("Failed to load exercises:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      loadExercises();
     }, [selectedMuscle, selectedEquipment]),
   );
-
-  const handleDelete = async (id: number, name: string) => {
-    Alert.alert(
-      "Delete Exercise",
-      `Are you sure you want to delete "${name}"?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteExercise(db, id);
-              await loadExercises();
-            } catch (error) {
-              console.error("Error deleting exercise:", error);
-              Alert.alert("Error", "Failed to delete exercise");
-            }
-          },
-        },
-      ],
-    );
-  };
-
-  const handleViewExercise = (id: number) => {
-    router.push({
-      pathname: "/(tabs)/exercises/[id]",
-      params: { id },
-    });
-  };
-
-  const handleCreate = () =>
-    router.navigate("/(tabs)/exercises/createExercise");
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.surface }}>
@@ -154,7 +113,17 @@ const Index = () => {
                     styles.deleteButton,
                     { backgroundColor: theme.colors.error },
                   ]}
-                  onPress={() => handleDelete(item.id!, item.name)}
+                  onPress={() =>
+                    handleDeleteExercise(
+                      db,
+                      item.name,
+                      item.id!,
+                      selectedMuscle,
+                      selectedEquipment,
+                      setExercises,
+                      setLoading,
+                    )
+                  }
                 >
                   <Text
                     style={[styles.deleteText, { color: theme.colors.onError }]}

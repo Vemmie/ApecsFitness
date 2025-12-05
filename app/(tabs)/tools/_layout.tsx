@@ -4,7 +4,7 @@ export const unstable_settings = {
   initialRouteName: "index",
 };
 
-export default function ExercisesLayout() {
+export default function Layout() {
   return (
     <Stack
       screenOptions={{
