@@ -10,6 +10,9 @@ const createWorkoutExerciseTableQuery = `
         workoutId INTEGER NOT NULL,
         exerciseId INTEGER NOT NULL,
         orderIndex INTEGER,
+        sets INTEGER DEFAULT 3,
+        reps INTEGER DEFAULT 10,
+        duration FLOAT DEFAULT 0,
         FOREIGN KEY (workoutId) REFERENCES Workouts(id) ON DELETE CASCADE,
         FOREIGN KEY (exerciseId) REFERENCES Exercises(id) ON DELETE CASCADE
     );

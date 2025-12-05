@@ -10,6 +10,8 @@ const workout = () => {
   const theme = useTheme();
   const handleCreate = () => router.navigate("/(tabs)/workouts/createWorkout");
 
+  // Create hooks in a separate file to handle the logic
+
   return (
     <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
       <ThemedAppHeader
