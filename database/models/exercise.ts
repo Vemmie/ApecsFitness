@@ -53,6 +53,12 @@ const updateExerciseQuery = `
   WHERE id = $id;
 `;
 
+const getExerciseByIdQuery = `
+  SELECT *
+  FROM ${tableName}
+  WHERE id = $id;
+`;
+
 const deleteExerciseQuery = `
   DELETE FROM ${tableName}
   WHERE id = $id
@@ -90,6 +96,16 @@ export const fetchExercisesFiltered = async (
     return result as Exercise[];
   } catch (error) {
     console.error("Error fetching exercises:", error);
+    throw error;
+  }
+};
+
+export const fetchtExerciseById = async (db: SQLiteDatabase, id: number) => {
+  try {
+    const result = await db.getFirstAsync(getExerciseByIdQuery, { $id: id });
+    return result as Exercise;
+  } catch (error) {
+    console.error("Error fetching exercise by ID:", error);
     throw error;
   }
 };

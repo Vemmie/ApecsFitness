@@ -1,82 +1,140 @@
-// workoutModel.ts
+// db/workouts.ts
+import RecordType from "@/constants/RecordType";
 import { SQLiteDatabase } from "expo-sqlite";
 
-//
-// ======================
-//  SQL QUERIES (TOP)
-// ======================
-//
+const WorkoutsTable = "Workouts";
+const WorkoutExercisesTable = "Workout_Exercises";
+const ExercisesTable = "Exercises";
 
-export const CREATE_WORKOUT_TABLE = `
-  CREATE TABLE IF NOT EXISTS Workouts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    description TEXT
-  );
-`;
+export type Workout = {
+  id?: number;
+  name: string;
+  description?: string | null;
+};
 
-export const CREATE_WORKOUT_EXERCISE_TABLE = `
-  CREATE TABLE IF NOT EXISTS Workout_Exercises (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    workoutId INTEGER NOT NULL,
-    exerciseId INTEGER NOT NULL,
-    orderIndex INTEGER,
-    FOREIGN KEY (workoutId) REFERENCES Workouts(id) ON DELETE CASCADE,
-    FOREIGN KEY (exerciseId) REFERENCES Exercises(id) ON DELETE CASCADE
-  );
-`;
+export type WorkoutExerciseInput = {
+  exerciseId: number;
+  sets?: number;
+  reps?: number;
+  duration?: number;
+};
 
-export const INSERT_WORKOUT = `
-  INSERT INTO Workouts (name, description)
-  VALUES (?, ?);
-`;
+export type WorkoutExercise = {
+  id?: number;
+  workoutId: number;
+  exerciseId: number;
+  orderIndex?: number;
+  sets?: number | null;
+  reps?: number | null;
+  duration?: number | null;
+};
 
-export const INSERT_WORKOUT_EXERCISE = `
-  INSERT INTO Workout_Exercises (workoutId, exerciseId, orderIndex)
-  VALUES (?, ?, ?);
-`;
+type ExerciseRow = { record_type: string };
 
 //
 // ======================
-//  LOGIC / FUNCTIONS (BOTTOM)
+//  TABLE CREATION QUERIES
 // ======================
 //
 
-export async function createWorkoutTable(db: SQLiteDatabase) {
-  await db.execAsync(CREATE_WORKOUT_TABLE);
-}
+//
+// ======================
+//  INSERT / SELECT QUERIES
+// ======================
+//
 
-export async function createWorkoutExerciseTable(db: SQLiteDatabase) {
-  await db.execAsync(CREATE_WORKOUT_EXERCISE_TABLE);
-}
+export const insertWorkoutQuery = `
+  INSERT INTO ${WorkoutsTable} (name, description)
+  VALUES ($name, $description);
+`;
 
-export async function createWorkoutWithExercises(
-  db: SQLiteDatabase,
-  name: string,
-  description: string | null,
-  exerciseIds: number[],
-) {
+export const insertWorkoutExerciseQuery = `
+  INSERT INTO ${WorkoutExercisesTable} 
+    (workoutId, exerciseId, orderIndex, sets, reps, duration)
+  VALUES ($workoutId, $exerciseId, $orderIndex, $sets, $reps, $duration);
+`;
+
+export const getWorkoutByIdQuery = `
+  SELECT * FROM ${WorkoutsTable} WHERE id = $id;
+`;
+
+export const getWorkoutExercisesQuery = `
+  SELECT * FROM ${WorkoutExercisesTable} WHERE workoutId = $workoutId;
+`;
+
+export const getExerciseRecordTypeQuery = `
+  SELECT record_type FROM ${ExercisesTable} WHERE id = $id;
+`;
+
+//
+// ======================
+//  MODEL FUNCTIONS
+// ======================
+//
+
+export const insertWorkout = async (db: SQLiteDatabase, workout: Workout) => {
+  const stmt = await db.prepareAsync(insertWorkoutQuery);
   try {
-    await db.execAsync("BEGIN TRANSACTION;");
-
-    // Insert workout
-    const result = await db.runAsync(INSERT_WORKOUT, [name, description]);
-    const workoutId = result.lastInsertRowId;
-
-    // Insert join table rows
-    for (let i = 0; i < exerciseIds.length; i++) {
-      await db.runAsync(INSERT_WORKOUT_EXERCISE, [
-        workoutId,
-        exerciseIds[i],
-        i, // orderIndex
-      ]);
-    }
-
-    await db.execAsync("COMMIT;");
-    return workoutId;
-  } catch (error) {
-    console.error("Failed to create workout:", error);
-    await db.execAsync("ROLLBACK;");
-    throw error;
+    const result = await stmt.executeAsync({
+      $name: workout.name,
+      $description: workout.description ?? null,
+    });
+    return result.lastInsertRowId;
+  } finally {
+    await stmt.finalizeAsync();
   }
-}
+};
+
+export const insertWorkoutExercise = async (
+  db: SQLiteDatabase,
+  workoutId: number,
+  exercise: WorkoutExerciseInput,
+  orderIndex: number,
+) => {
+  // Get exercise record_type
+  const exerciseRow = await db.getFirstAsync<ExerciseRow>(
+    getExerciseRecordTypeQuery,
+    {
+      $id: exercise.exerciseId,
+    },
+  );
+
+  if (!exerciseRow)
+    throw new Error(`Exercise with ID ${exercise.exerciseId} not found`);
+
+  let sets: number | null = 3;
+  let reps: number | null = 10;
+  let duration: number | null = 0;
+
+  switch (exerciseRow.record_type as RecordType) {
+    case RecordType.WEIGHT_AND_REPS:
+      sets = exercise.sets ?? 3;
+      reps = exercise.reps ?? 10;
+      duration = 0;
+      break;
+    case RecordType.REPS:
+      sets = exercise.sets ?? 3;
+      reps = exercise.reps ?? 10;
+      duration = 0;
+      break;
+    case RecordType.TIME:
+      sets = null;
+      reps = null;
+      duration = exercise.duration ?? 30;
+      break;
+  }
+
+  const stmt = await db.prepareAsync(insertWorkoutExerciseQuery);
+  try {
+    await stmt.executeAsync({
+      $workoutId: workoutId,
+      $exerciseId: exercise.exerciseId,
+      $orderIndex: orderIndex,
+      $sets: sets,
+      $reps: reps,
+      $duration: duration,
+    });
+  } finally {
+    await stmt.finalizeAsync();
+  }
+};

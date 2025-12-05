@@ -1,49 +1,32 @@
+import ThemedAppHeader from "@/components/ThemedAppHeader";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-// Import Paper components
-import {
-  TextInput as PaperTextInput,
-  Text,
-  useTheme, // To access the theme
-} from "react-native-paper";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
 import { isValidPositiveNumberInput } from "../../../utils/isValidPositiveNumberInput";
 
-const onerep = () => {
-  // states
+const OneRep = () => {
   const [result, setResult] = useState(0);
   const [error, setError] = useState(false);
-  const [liftData, setLiftData] = useState({
-    weight: "",
-    reps: "",
-  });
+  const [liftData, setLiftData] = useState({ weight: "", reps: "" });
 
   useEffect(() => {
-    // ---- Validation Logic ----
     if (!isValidPositiveNumberInput(liftData.weight)) {
       setError(true);
-      setLiftData((prev) => ({
-        ...prev,
-        weight: "",
-      }));
+      setLiftData((prev) => ({ ...prev, weight: "" }));
       return;
     }
     if (!isValidPositiveNumberInput(liftData.reps)) {
       setError(true);
-      setLiftData((prev) => ({
-        ...prev,
-        reps: "",
-      }));
+      setLiftData((prev) => ({ ...prev, reps: "" }));
       return;
     }
 
-    // If there's an error reset the result to
-    if (error) {
-      setResult(0);
-    }
+    if (error) setResult(0);
 
     const bothFilled = liftData.weight !== "" && liftData.reps !== "";
-    // UI and Calculation based on Validation
+
     if (bothFilled) {
       setError(false);
       handleCalculation();
@@ -52,7 +35,6 @@ const onerep = () => {
     }
   }, [liftData.weight, liftData.reps]);
 
-  // function for on event handler to calculate the max rep
   const handleCalculation = () => {
     try {
       const oneRep = calculateOneRepMax(
@@ -61,65 +43,58 @@ const onerep = () => {
       );
       setResult(oneRep);
       setError(false);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(true);
-      }
+    } catch {
+      setError(true);
     }
   };
 
   const theme = useTheme();
+  const router = useRouter();
+  const goBack = () => router.navigate("..");
 
   return (
-    <View
-      style={[
-        {
-          backgroundColor: theme.colors.surface,
-        },
-        styles.contents,
-      ]}
-    >
-      <ScrollView>
-        <View style={styles.header}>
-          <Text style={[{ color: theme.colors.primary }, styles.text]}>
-            One Rep Max Page
-          </Text>
-          {/*This is the text input form for both the weight and reps*/}
-          <PaperTextInput
-            //style needed
-            inputMode="numeric"
-            keyboardType="numeric"
-            onChangeText={(text) =>
-              setLiftData((prev) => ({
-                ...prev,
-                weight: text,
-              }))
-            }
-            value={liftData.weight.toString()}
-            placeholder="Weight"
-          />
-          <PaperTextInput
-            //style needed
-            inputMode="numeric"
-            keyboardType="numeric"
-            onChangeText={(text) =>
-              setLiftData((prev) => ({
-                ...prev,
-                reps: text,
-              }))
-            }
-            value={liftData.reps.toString()}
-            placeholder="Reps"
-          />
-        </View>
-        {/*This is the conditional display if theres an error or the result*/}
+    <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
+      <ThemedAppHeader
+        title="One Rep Max Calculator"
+        showBackButton
+        onBackPress={goBack}
+      />
+
+      <ScrollView contentContainerStyle={styles.contents}>
+        {/* Weight Input */}
+        <TextInput
+          style={styles.input}
+          placeholder="Weight"
+          placeholderTextColor="#9b8cff"
+          keyboardType="numeric"
+          value={liftData.weight}
+          onChangeText={(text) =>
+            setLiftData((prev) => ({ ...prev, weight: text }))
+          }
+        />
+
+        {/* Reps Input */}
+        <TextInput
+          style={styles.input}
+          placeholder="Reps"
+          placeholderTextColor="#9b8cff"
+          keyboardType="numeric"
+          value={liftData.reps}
+          onChangeText={(text) =>
+            setLiftData((prev) => ({ ...prev, reps: text }))
+          }
+        />
+
         {error && (
           <Text style={{ color: "red" }}>
-            "Weight and/or reps must be positive numbers."
+            Weight and/or reps must be positive numbers.
           </Text>
         )}
+
         {result > 0 && (
-          <Text>Your estimated 1RM is: {result.toFixed(2)} lbs</Text>
+          <Text style={{ fontWeight: "bold", marginTop: 12 }}>
+            Your estimated 1RM is: {result.toFixed(2)} lbs
+          </Text>
         )}
       </ScrollView>
     </View>
@@ -127,9 +102,19 @@ const onerep = () => {
 };
 
 const styles = StyleSheet.create({
-  contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
-  header: { justifyContent: "center", alignContent: "center" },
-  text: { fontWeight: "bold", paddingBottom: 16 },
+  contents: {
+    padding: 32,
+    paddingTop: 64,
+  },
+  input: {
+    borderWidth: 2,
+    borderColor: "#7B61FF", // 💜 Purple outline like your old version
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    backgroundColor: "#f3eaff", // very light purple fill (optional)
+    color: "black",
+  },
 });
 
-export default onerep;
+export default OneRep;
