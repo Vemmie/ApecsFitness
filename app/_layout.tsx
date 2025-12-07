@@ -9,9 +9,12 @@ import {
 } from "react-native-paper";
 import "react-native-reanimated";
 
+import DrizzleStudioSetup from "@/components/drizzlestudio/DrizzleStudioSetup";
 import { migrateDbIfNeeded } from "@/database/sqliteUtils";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
+
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -26,17 +29,20 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SQLiteProvider
-        databaseName="apecs.db"
-        onInit={migrateDbIfNeeded}
-        useSuspense
-      >
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </SQLiteProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SQLiteProvider
+          databaseName="apecs.db"
+          onInit={migrateDbIfNeeded}
+          useSuspense
+        >
+          <DrizzleStudioSetup />
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </SQLiteProvider>
+      </GestureHandlerRootView>
     </PaperProvider>
   );
 }

@@ -4,7 +4,7 @@ import ThemedAppHeader from "@/components/ThemedAppHeader";
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import RecordType from "@/constants/RecordType";
-import { insertExercise } from "@/database/Exercises";
+import { insertExercise } from "@/database/models/exercise";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React from "react";
