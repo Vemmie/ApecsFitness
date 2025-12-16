@@ -31,6 +31,30 @@ export default function Tools() {
             </Text>
           </Pressable>
         </Link>
+        <Link href="/(tabs)/tools/dots" push asChild>
+          <Pressable
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 12,
+            }}
+          >
+            <FontAwesome6
+              name="calculator"
+              size={24}
+              color={theme.colors.primary}
+            />
+            <Text
+              style={{
+                marginTop: 4,
+                paddingLeft: 10,
+                color: theme.colors.secondary,
+              }}
+            >
+              DOTs Calculator
+            </Text>
+          </Pressable>
+        </Link>
       </ScrollView>
     </View>
   );
