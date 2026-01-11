@@ -31,6 +31,30 @@ export default function Tools() {
             </Text>
           </Pressable>
         </Link>
+        <Link href="/(tabs)/tools/bmi" push asChild>
+          <Pressable
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 4,
+            }}
+          >
+            <FontAwesome6
+              name="calculator"
+              size={24}
+              color={theme.colors.primary}
+            />
+            <Text
+              style={{
+                marginTop: 4,
+                paddingLeft: 10,
+                color: theme.colors.secondary,
+              }}
+            >
+              BMI Calculator
+            </Text>
+          </Pressable>
+        </Link>
       </ScrollView>
     </View>
   );

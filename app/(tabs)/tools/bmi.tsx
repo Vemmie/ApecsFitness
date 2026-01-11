@@ -1,61 +1,60 @@
 import ThemedAppHeader from "@/components/ThemedAppHeader";
+import { calculateBMI } from "@/utils/calculateBMI";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { calculateOneRepMax } from "../../../utils/calculateOneRepMax";
 import { isValidPositiveNumberInput } from "../../../utils/isValidPositiveNumberInput";
 
-const OneRep = () => {
+const BmiCalc = () => {
   const [result, setResult] = useState(0);
   const [error, setError] = useState(false);
-  const [liftData, setLiftData] = useState({ weight: "", reps: "" });
+  const [bmiData, setBmiData] = useState({ weight: "", height: "" });
+
+  const theme = useTheme();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!isValidPositiveNumberInput(liftData.weight)) {
+    // 1. Validate Weight
+    if (bmiData.weight !== "" && !isValidPositiveNumberInput(bmiData.weight)) {
       setError(true);
-      setLiftData((prev) => ({ ...prev, weight: "" }));
-      return;
-    }
-    if (!isValidPositiveNumberInput(liftData.reps)) {
-      setError(true);
-      setLiftData((prev) => ({ ...prev, reps: "" }));
       return;
     }
 
-    if (error) setResult(0);
+    // 2. Validate Height
+    if (bmiData.height !== "" && !isValidPositiveNumberInput(bmiData.height)) {
+      setError(true);
+      return;
+    }
 
-    const bothFilled = liftData.weight !== "" && liftData.reps !== "";
+    const bothFilled = bmiData.weight !== "" && bmiData.height !== "";
 
     if (bothFilled) {
       setError(false);
       handleCalculation();
     } else {
       setResult(0);
+      setError(false);
     }
-  }, [liftData.weight, liftData.reps]);
+  }, [bmiData.weight, bmiData.height]);
 
   const handleCalculation = () => {
     try {
-      const oneRep = calculateOneRepMax(
-        Number(liftData.weight),
-        Number(liftData.reps),
-      );
-      setResult(oneRep);
+      // Assuming calculateBMI takes (weight, height)
+      const bmi = calculateBMI(Number(bmiData.weight), Number(bmiData.height));
+      setResult(bmi);
       setError(false);
     } catch {
       setError(true);
     }
   };
 
-  const theme = useTheme();
-  const router = useRouter();
   const goBack = () => router.navigate("..");
 
   return (
     <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
       <ThemedAppHeader
-        title="One Rep Max Calculator"
+        title="BMI Calculator"
         showBackButton
         onBackPress={goBack}
       />
@@ -64,41 +63,52 @@ const OneRep = () => {
         {/* Weight Input */}
         <TextInput
           style={styles.input}
-          placeholder="Weight"
+          placeholder="Weight (lbs)"
           placeholderTextColor="#9b8cff"
           keyboardType="numeric"
-          value={liftData.weight}
+          value={bmiData.weight}
           onChangeText={(text) =>
-            setLiftData((prev) => ({ ...prev, weight: text }))
+            setBmiData((prev) => ({ ...prev, weight: text }))
           }
         />
 
-        {/* Reps Input */}
+        {/* Height Input */}
         <TextInput
           style={styles.input}
-          placeholder="Reps"
+          placeholder="Height (in)"
           placeholderTextColor="#9b8cff"
           keyboardType="numeric"
-          value={liftData.reps}
+          value={bmiData.height}
           onChangeText={(text) =>
-            setLiftData((prev) => ({ ...prev, reps: text }))
+            setBmiData((prev) => ({ ...prev, height: text }))
           }
         />
 
         {error && (
           <Text style={{ color: "red" }}>
-            Weight and/or reps must be positive numbers.
+            Weight and height must be positive numbers.
           </Text>
         )}
 
-        {result > 0 && (
-          <Text style={{ fontWeight: "bold", marginTop: 12 }}>
-            Your estimated 1RM is: {result.toFixed(2)} lbs
-          </Text>
+        {result > 0 && !error && (
+          <View style={styles.resultContainer}>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+              Your BMI: {result.toFixed(1)}
+            </Text>
+            <Text style={{ marginTop: 8 }}>{getBMICategory(result)}</Text>
+          </View>
         )}
       </ScrollView>
     </View>
   );
+};
+
+// Optional helper for UX
+const getBMICategory = (bmi: number) => {
+  if (bmi < 18.5) return "Underweight";
+  if (bmi < 25) return "Normal weight";
+  if (bmi < 30) return "Overweight";
+  return "Obese";
 };
 
 const styles = StyleSheet.create({
@@ -112,9 +122,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    backgroundColor: "#f3eaff", // very light purple fill (optional)
+    backgroundColor: "#f3eaff",
     color: "black",
+  },
+  resultContainer: {
+    marginTop: 24,
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: "#b6a6a6",
   },
 });
 
-export default OneRep;
+export default BmiCalc;
