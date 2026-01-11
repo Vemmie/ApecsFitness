@@ -5,27 +5,19 @@ import { useTheme } from "react-native-paper";
 import MuscleChip from "./MuscleChip";
 
 type Props = {
-  selectedMuscles: Set<MuscleEnum>;
-  setSelectedMuscles: React.Dispatch<React.SetStateAction<Set<MuscleEnum>>>;
+  selectedMuscle: MuscleEnum | undefined;
+  setSelectedMuscle: (muscle: MuscleEnum | undefined) => void;
 };
 
-const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
+const MuscleSelector = ({ selectedMuscle, setSelectedMuscle }: Props) => {
   const theme = useTheme();
 
-  const addSelectedMuscle = (muscle: MuscleEnum) => {
-    setSelectedMuscles((prev) => {
-      const newMuscles = new Set(prev);
-      newMuscles.add(muscle);
-      return newMuscles;
-    });
-  };
-
-  const removeSelectedMuscle = (muscle: MuscleEnum) => {
-    setSelectedMuscles((prev) => {
-      const newMuscles = new Set(prev);
-      newMuscles.delete(muscle);
-      return newMuscles;
-    });
+  const handlePress = (muscle: MuscleEnum) => {
+    if (selectedMuscle === muscle) {
+      setSelectedMuscle(undefined);
+    } else {
+      setSelectedMuscle(muscle);
+    }
   };
 
   return (
@@ -44,9 +36,8 @@ const MuscleSelector = ({ selectedMuscles, setSelectedMuscles }: Props) => {
             key={muscle}
             style={styles.chip}
             muscle={muscle}
-            selectedMuscles={selectedMuscles}
-            addSelectedMuscle={addSelectedMuscle}
-            removeSelectedMuscle={removeSelectedMuscle}
+            isSelected={selectedMuscle === muscle}
+            onPress={handlePress}
           />
         ))}
       </View>
