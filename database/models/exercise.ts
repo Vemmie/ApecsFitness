@@ -8,15 +8,16 @@ const tableName = "Exercises";
 export type Exercise = {
   id?: number;
   name: string;
-  muscle: MuscleEnum;
+  primary_muscle: MuscleEnum;
+  secondary_muscle: MuscleEnum;
   equipment: EquipmentEnum;
-  recordType: string; // "weight", "time", etc.
+  record_type: string; // "weight", "time", etc.
 };
 
 // Queries
 const insertExerciseQuery = `
-  INSERT INTO ${tableName} (name, muscle, equipment, record_type)
-  VALUES ($name, $muscle, $equipment, $recordType)
+  INSERT INTO ${tableName} (name, primary_muscle, secondary_muscle, equipment, record_type)
+  VALUES ($name, $primary_muscle, $secondary_muscle, $equipment, $recordType)
 `;
 
 function selectExercisesFilteredQuery(
@@ -27,8 +28,8 @@ function selectExercisesFilteredQuery(
   const params: Record<string, any> = {};
   const conditions: string[] = [];
 
-  if (muscle != null) {
-    conditions.push(`muscle = $muscle`);
+  if (muscle != null && muscle !== MuscleEnum.NONE) {
+    conditions.push(`(primary_muscle = $muscle OR secondary_muscle = $muscle)`);
     params["$muscle"] = muscle;
   }
 
@@ -41,13 +42,14 @@ function selectExercisesFilteredQuery(
     query += ` WHERE ` + conditions.join(" AND ");
   }
 
-  return { query, params }; // always return a params object
+  return { query, params };
 }
 
 const updateExerciseQuery = `
   UPDATE ${tableName}
   SET name = $name,
-      muscle = $muscle,
+      primary_muscle = $primary_muscle,
+      secondary_muscle = $secondary_muscle,
       equipment = $equipment,
       record_type = $recordType
   WHERE id = $id;
@@ -69,15 +71,18 @@ export const insertExercise = async (
   db: SQLiteDatabase,
   exercise: Exercise,
 ) => {
-  const { name, muscle, equipment, recordType } = exercise;
+  const { name, primary_muscle, secondary_muscle, equipment, record_type } =
+    exercise;
 
   const stmt = await db.prepareAsync(insertExerciseQuery);
   try {
     return await stmt.executeAsync({
       $name: name,
-      $muscle: muscle,
+      $primary_muscle: primary_muscle,
+      $secondary_muscle:
+        secondary_muscle === MuscleEnum.NONE ? null : secondary_muscle,
       $equipment: equipment,
-      $recordType: recordType,
+      $record_type: record_type,
     });
   } finally {
     await stmt.finalizeAsync();
@@ -122,9 +127,18 @@ export const updateExercise = async (
     params["$name"] = exercise.name;
   }
 
-  if (exercise.muscle !== undefined) {
-    fields.push("muscle = $muscle");
-    params["$muscle"] = exercise.muscle;
+  if (exercise.primary_muscle !== undefined) {
+    fields.push("primary_muscle = $primary_muscle");
+    params["$primary_muscle"] = exercise.primary_muscle;
+  }
+
+  if (exercise.secondary_muscle !== undefined) {
+    fields.push("secondary_muscle = $secondary_muscle");
+    params["$secondary_muscle"] =
+      exercise.secondary_muscle === MuscleEnum.NONE ||
+      !exercise.secondary_muscle
+        ? null
+        : exercise.secondary_muscle;
   }
 
   if (exercise.equipment !== undefined) {
@@ -132,9 +146,9 @@ export const updateExercise = async (
     params["$equipment"] = exercise.equipment;
   }
 
-  if (exercise.recordType !== undefined) {
+  if (exercise.record_type !== undefined) {
     fields.push("record_type = $recordType");
-    params["$recordType"] = exercise.recordType;
+    params["$recordType"] = exercise.record_type;
   }
 
   // No updates → ignore

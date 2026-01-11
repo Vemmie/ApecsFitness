@@ -7,8 +7,8 @@ import RecordType from "@/constants/RecordType";
 import { insertExercise } from "@/database/models/exercise";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View, Alert } from "react-native";
 import {
   Button,
   RadioButton,
@@ -17,40 +17,102 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const createExercise = () => {
+const CreateExercise = () => {
   const theme = useTheme();
   const router = useRouter();
-
   const db = useSQLiteContext();
-  const goBack = () => router.navigate("..");
-  const [exerciseName, setExerciseName] = React.useState<string>("");
-  const [selectedEquipment, setEquipment] = React.useState<EquipmentEnum>();
-  const [selectedMuscle, setSelectedMuscle] = React.useState<MuscleEnum>();
-  const [recordType, setRecordType] = React.useState<RecordType>(
+
+  const [exerciseName, setExerciseName] = useState<string>("");
+  const [selectedEquipment, setEquipment] = useState<EquipmentEnum>();
+  const [selectedMuscle, setSelectedMuscle] = useState<MuscleEnum>();
+  const [selectedMuscle_Secondary, setSelectedMuscle_Secondary] =
+    useState<MuscleEnum>();
+  const [recordType, setRecordType] = useState<RecordType>(
     RecordType.WEIGHT_AND_REPS,
   );
 
+  const goBack = () => router.navigate("..");
+
+  // --- 1. AUTO-CLEAR LOGIC ---
+  // If user changes Primary to match what is already in Secondary, clear Secondary.
+  useEffect(() => {
+    if (selectedMuscle && selectedMuscle === selectedMuscle_Secondary) {
+      setSelectedMuscle_Secondary(undefined);
+    }
+  }, [selectedMuscle]);
+
+  const handleCreate = async () => {
+    // Basic Validation
+    if (!exerciseName.trim()) {
+      Alert.alert("Error", "Please enter an exercise name.");
+      return;
+    }
+    if (!selectedMuscle) {
+      Alert.alert("Error", "Please select a primary muscle.");
+      return;
+    }
+
+    try {
+      await insertExercise(db, {
+        name: exerciseName,
+        primary_muscle: selectedMuscle,
+        secondary_muscle: selectedMuscle_Secondary || MuscleEnum.NONE,
+        equipment: selectedEquipment || EquipmentEnum.OTHER,
+        record_type: recordType,
+      });
+      goBack();
+    } catch (error) {
+      console.error("Failed to insert exercise:", error);
+      Alert.alert("Error", "Could not save exercise.");
+    }
+  };
+
   return (
-    <View style={{ backgroundColor: theme.colors.surface, flexShrink: 1 }}>
+    <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
       <ThemedAppHeader
-        title="Create Exercise" // The title for this screen
-        showBackButton={true} // Show the back button
-        onBackPress={goBack} // Pass the specific back action
+        title="Create Exercise"
+        showBackButton={true}
+        onBackPress={goBack}
       />
 
-      <ScrollView style={{ flexShrink: 1 }}>
-        <View style={{ padding: 16, gap: 24, flexShrink: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
+        <View style={{ padding: 16, gap: 24 }}>
           <TextInput
             label="Exercise Name"
             value={exerciseName}
-            onChangeText={(text) => setExerciseName(text)}
+            onChangeText={setExerciseName}
             mode="outlined"
-            style={{ marginBottom: 16 }}
           />
-          <MuscleSelector
-            selectedMuscle={selectedMuscle}
-            setSelectedMuscle={setSelectedMuscle}
-          />
+
+          <View>
+            <Text style={[styles.label, { color: theme.colors.primary }]}>
+              Primary Muscle
+            </Text>
+            <MuscleSelector
+              selectedMuscle={selectedMuscle}
+              setSelectedMuscle={setSelectedMuscle}
+            />
+          </View>
+
+          <View>
+            <Text style={[styles.label, { color: theme.colors.primary }]}>
+              Secondary Muscle
+            </Text>
+            <MuscleSelector
+              selectedMuscle={selectedMuscle_Secondary}
+              // --- 3. SELECTION VALIDATION ---
+              setSelectedMuscle={(muscle) => {
+                if (muscle && muscle === selectedMuscle) {
+                  Alert.alert(
+                    "Selection Error",
+                    "Secondary muscle cannot be the same as primary.",
+                  );
+                  return;
+                }
+                setSelectedMuscle_Secondary(muscle);
+              }}
+            />
+          </View>
 
           <EquipmentSelector
             selectedEquipment={selectedEquipment}
@@ -58,12 +120,10 @@ const createExercise = () => {
           />
 
           <RadioButton.Group
-            onValueChange={(newValue: string) =>
-              setRecordType(newValue as RecordType)
-            }
+            onValueChange={(newValue) => setRecordType(newValue as RecordType)}
             value={recordType}
           >
-            <Text style={{ fontSize: 16, color: theme.colors.primary }}>
+            <Text style={[styles.label, { color: theme.colors.primary }]}>
               Record Type
             </Text>
             <RadioButton.Item
@@ -83,18 +143,9 @@ const createExercise = () => {
             />
           </RadioButton.Group>
         </View>
-        <View style={{ paddingBottom: 10, paddingHorizontal: 16 }}>
-          <Button
-            mode="contained"
-            onPress={async () => {
-              const result = await insertExercise(db, {
-                name: exerciseName,
-                muscle: selectedMuscle || MuscleEnum.ABS,
-                equipment: selectedEquipment || EquipmentEnum.OTHER,
-                recordType: recordType,
-              });
-            }}
-          >
+
+        <View style={{ padding: 16, marginBottom: 20 }}>
+          <Button mode="contained" onPress={handleCreate}>
             Create
           </Button>
         </View>
@@ -104,13 +155,14 @@ const createExercise = () => {
 };
 
 const styles = StyleSheet.create({
-  chip: {
-    width: "50%",
-    flexGrow: 1,
+  label: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 8,
   },
   radioButtonItem: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
   },
 });
 
-export default createExercise;
+export default CreateExercise;

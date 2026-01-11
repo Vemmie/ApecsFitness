@@ -1,6 +1,6 @@
 import MuscleEnum from "@/constants/MuscleEnum";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import MuscleChip from "./MuscleChip";
 
@@ -22,7 +22,6 @@ const MuscleSelector = ({ selectedMuscle, setSelectedMuscle }: Props) => {
 
   return (
     <View style={[styles.contents]}>
-      <Text style={{ fontSize: 16, color: theme.colors.primary }}>Muscles</Text>
       <View
         style={{
           flexDirection: "row",
@@ -31,15 +30,17 @@ const MuscleSelector = ({ selectedMuscle, setSelectedMuscle }: Props) => {
           gap: 8,
         }}
       >
-        {Object.values(MuscleEnum).map((muscle) => (
-          <MuscleChip
-            key={muscle}
-            style={styles.chip}
-            muscle={muscle}
-            isSelected={selectedMuscle === muscle}
-            onPress={handlePress}
-          />
-        ))}
+        {Object.values(MuscleEnum)
+          .filter((item) => item !== MuscleEnum.NONE)
+          .map((muscle) => (
+            <MuscleChip
+              key={muscle}
+              style={styles.chip}
+              muscle={muscle}
+              isSelected={selectedMuscle === muscle}
+              onPress={handlePress}
+            />
+          ))}
       </View>
     </View>
   );
