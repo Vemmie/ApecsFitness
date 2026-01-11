@@ -3,7 +3,7 @@ import MuscleSelector from "@/components/exercises/CreateExercises/MuscleSelecto
 import EquipmentEnum from "@/constants/EquipmentEnum";
 import MuscleEnum from "@/constants/MuscleEnum";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
 interface FilterExerciseSelectorProps {
@@ -22,51 +22,39 @@ const FilterExerciseSelector: React.FC<FilterExerciseSelectorProps> = ({
   const theme = useTheme();
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.outline,
-        },
-      ]}
-    >
-      <ScrollView nestedScrollEnabled style={{ maxHeight: 300 }}>
-        {/* Muscle Selection */}
-        <Text style={[styles.label, { color: theme.colors.onSurface }]}>
-          Select Muscle
-        </Text>
-        <MuscleSelector
-          selectedMuscle={selectedMuscle}
-          setSelectedMuscle={setSelectedMuscle}
-        />
+    <View style={styles.container}>
+      {/* Muscle Selection */}
+      <Text style={[styles.label, { color: theme.colors.onSurface }]}>
+        Select Muscle
+      </Text>
+      <MuscleSelector
+        selectedMuscle={selectedMuscle}
+        setSelectedMuscle={setSelectedMuscle}
+      />
 
-        <View style={{ height: 24 }} />
+      <View style={{ height: 24 }} />
 
-        {/* Equipment Selection */}
-        <Text style={[styles.label, { color: theme.colors.onSurface }]}>
-          Select Equipment
-        </Text>
-        <EquipmentSelector
-          selectedEquipment={equipment}
-          setEquipment={setEquipment}
-        />
-      </ScrollView>
+      {/* Equipment Selection */}
+      <Text style={[styles.label, { color: theme.colors.onSurface }]}>
+        Select Equipment
+      </Text>
+      <EquipmentSelector
+        selectedEquipment={equipment}
+        setEquipment={setEquipment}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    flexShrink: 1,
-    borderWidth: 1,
-    borderRadius: 8,
+    paddingVertical: 8,
+    width: "100%",
   },
   label: {
     fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 8,
+    fontWeight: "bold", // Made slightly bolder for better hierarchy
+    marginBottom: 12,
   },
 });
 
