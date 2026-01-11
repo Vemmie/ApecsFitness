@@ -24,10 +24,8 @@ const createExercise = () => {
   const db = useSQLiteContext();
   const goBack = () => router.navigate("..");
   const [exerciseName, setExerciseName] = React.useState<string>("");
-  const [equipment, setEquipment] = React.useState<EquipmentEnum>();
-  const [selectedMuscles, setSelectedMuscles] = React.useState<Set<MuscleEnum>>(
-    new Set(),
-  );
+  const [selectedEquipment, setEquipment] = React.useState<EquipmentEnum>();
+  const [selectedMuscle, setSelectedMuscle] = React.useState<MuscleEnum>();
   const [recordType, setRecordType] = React.useState<RecordType>(
     RecordType.WEIGHT_AND_REPS,
   );
@@ -50,12 +48,12 @@ const createExercise = () => {
             style={{ marginBottom: 16 }}
           />
           <MuscleSelector
-            selectedMuscles={selectedMuscles}
-            setSelectedMuscles={setSelectedMuscles}
+            selectedMuscle={selectedMuscle}
+            setSelectedMuscle={setSelectedMuscle}
           />
 
           <EquipmentSelector
-            selectedEquipment={equipment}
+            selectedEquipment={selectedEquipment}
             setEquipment={setEquipment}
           />
 
@@ -91,8 +89,8 @@ const createExercise = () => {
             onPress={async () => {
               const result = await insertExercise(db, {
                 name: exerciseName,
-                muscle: Array.from(selectedMuscles)[0] || MuscleEnum.ABS,
-                equipment: equipment || EquipmentEnum.OTHER,
+                muscle: selectedMuscle || MuscleEnum.ABS,
+                equipment: selectedEquipment || EquipmentEnum.OTHER,
                 recordType: recordType,
               });
             }}
