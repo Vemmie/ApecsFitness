@@ -23,6 +23,9 @@ enum FemaleConstants {
   E = -0.0000010706,
 }
 
+// Conversion Constant KGs to LBs
+const LBS_TO_KG = 0.45359237;
+
 export const calculateDOTS = (
   gender: "male" | "female",
   bodyweight: number,
@@ -32,6 +35,10 @@ export const calculateDOTS = (
     throw new Error("Bodyweight and total lifted must be positive numbers.");
   }
 
+  // Converted LBS to KG
+  bodyweight = bodyweight * LBS_TO_KG;
+  totalLifted = totalLifted * LBS_TO_KG;
+
   const { A, B, C, D, E } = gender === "male" ? MaleConstants : FemaleConstants;
 
   const coefficient =
@@ -40,6 +47,10 @@ export const calculateDOTS = (
     C * Math.pow(bodyweight, 2) +
     D * Math.pow(bodyweight, 3) +
     E * Math.pow(bodyweight, 4);
+
+  if (coefficient <= 0 || !Number.isFinite(coefficient)) {
+    throw new Error("DOTS calculation out of valid range.");
+  }
 
   const dots = (500 * totalLifted) / coefficient;
 

@@ -31,7 +31,7 @@ export default function Tools() {
             </Text>
           </Pressable>
         </Link>
-        <Link href="/(tabs)/tools/dots" push asChild>
+        <Link href="/(tabs)/tools/dotsscreen" push asChild>
           <Pressable
             style={{
               flexDirection: "row",
