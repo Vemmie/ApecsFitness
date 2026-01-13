@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderColor: "#7B61FF", // 💜 Purple outline like your old version
+    borderColor: "#7B61FF",
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
