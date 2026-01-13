@@ -28,8 +28,6 @@ const IndexPage = () => {
     <View style={{ flex: 1, backgroundColor: theme.colors.surface }}>
       <ThemedAppHeader
         title="Tools" // The title for this screen
-        showBackButton={true} // Show the back button
-        onBackPress={() => router.back()} // Pass the specific back action
       />
       <Text
         style={{
