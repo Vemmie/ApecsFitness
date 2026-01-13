@@ -6,27 +6,20 @@ import { Chip } from "react-native-paper";
 type Props = {
   style: StyleProp<ViewStyle>;
   equipment: EquipmentEnum;
-  selectedEquipment?: EquipmentEnum;
-  setEquipment: (equipment: EquipmentEnum) => void;
+  isSelected: boolean;
+  onPress: (equipment: EquipmentEnum) => void;
 };
 
-const EquipmentChip = ({
-  style,
-  equipment,
-  selectedEquipment,
-  setEquipment,
-}: Props) => {
+const EquipmentChip = ({ style, equipment, isSelected, onPress }: Props) => {
   return (
     <Chip
       style={style}
       mode="outlined"
-      selected={selectedEquipment == equipment}
+      selected={isSelected}
       showSelectedOverlay={true}
       showSelectedCheck={false}
       onPress={() => {
-        selectedEquipment == equipment
-          ? setEquipment(EquipmentEnum.NONE) // Deselect if already selected
-          : setEquipment(equipment);
+        onPress(equipment);
       }}
     >
       {equipment}

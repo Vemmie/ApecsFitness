@@ -6,30 +6,19 @@ import { Chip } from "react-native-paper";
 type Props = {
   style: StyleProp<ViewStyle>;
   muscle: MuscleEnum;
-  selectedMuscles: Set<MuscleEnum>;
-  addSelectedMuscle: (muscles: MuscleEnum) => void;
-  removeSelectedMuscle: (muscles: MuscleEnum) => void;
+  isSelected: boolean;
+  onPress: (muscles: MuscleEnum) => void;
 };
 
-const MuscleChip = ({
-  style,
-  muscle,
-  selectedMuscles,
-  addSelectedMuscle,
-  removeSelectedMuscle,
-}: Props) => {
+const MuscleChip = ({ style, muscle, isSelected, onPress }: Props) => {
   return (
     <Chip
       style={style}
       mode="outlined"
-      selected={selectedMuscles.has(muscle)}
+      selected={isSelected}
       showSelectedOverlay={true}
       showSelectedCheck={false}
-      onPress={() => {
-        selectedMuscles.has(muscle)
-          ? removeSelectedMuscle(muscle)
-          : addSelectedMuscle(muscle);
-      }}
+      onPress={() => onPress(muscle)}
     >
       {muscle}
     </Chip>

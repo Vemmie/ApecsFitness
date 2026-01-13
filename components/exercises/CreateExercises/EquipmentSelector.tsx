@@ -5,12 +5,21 @@ import { useTheme } from "react-native-paper";
 import EquipmentChip from "./EquipmentChip";
 
 type Props = {
-  selectedEquipment?: EquipmentEnum;
-  setEquipment: (equipment: EquipmentEnum) => void;
+  selectedEquipment?: EquipmentEnum | undefined;
+  setEquipment: (equipment: EquipmentEnum | undefined) => void;
 };
 
 const EquipmentSelector = ({ selectedEquipment, setEquipment }: Props) => {
   const theme = useTheme();
+
+  const handlePress = (equipment: EquipmentEnum) => {
+    if (selectedEquipment === equipment) {
+      setEquipment(undefined);
+    } else {
+      setEquipment(equipment);
+    }
+  };
+
   return (
     <View style={[styles.contents]}>
       <Text style={{ fontSize: 16, color: theme.colors.primary }}>
@@ -31,8 +40,8 @@ const EquipmentSelector = ({ selectedEquipment, setEquipment }: Props) => {
               key={equipment}
               style={styles.chip}
               equipment={equipment}
-              selectedEquipment={selectedEquipment}
-              setEquipment={setEquipment}
+              isSelected={selectedEquipment == equipment}
+              onPress={handlePress}
             />
           ))}
       </View>
