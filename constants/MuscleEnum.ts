@@ -13,5 +13,6 @@ enum MuscleEnum {
   GLUTES = "Glutes",
   ABS = "Abs",
   HIP_FLEXORS = "Hip Flexors",
+  NONE = "None",
 }
 export default MuscleEnum;

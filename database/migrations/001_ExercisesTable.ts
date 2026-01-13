@@ -11,7 +11,8 @@ const createExercisesTableQuery = `
 CREATE TABLE IF NOT EXISTS ${tableName} (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    muscle TEXT,
+    primary_muscle TEXT,
+    secondary_muscle TEXT,
     equipment TEXT,
     record_type TEXT
 );

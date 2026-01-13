@@ -104,64 +104,77 @@ const Index = () => {
         </View>
       ) : (
         <ScrollView>
-          {exercises.map((item) => (
-            <Swipeable
-              key={item.id}
-              renderRightActions={() => (
+          {exercises.map((item) => {
+            // This for future debugging
+            //console.log("Exercise Item:", item);
+            return (
+              <Swipeable
+                key={item.id}
+                renderRightActions={() => (
+                  <TouchableOpacity
+                    style={[
+                      styles.deleteButton,
+                      { backgroundColor: theme.colors.error },
+                    ]}
+                    onPress={() =>
+                      handleDeleteExercise(
+                        db,
+                        item.name,
+                        item.id!,
+                        selectedMuscle,
+                        selectedEquipment,
+                        setExercises,
+                        setLoading,
+                      )
+                    }
+                  >
+                    <Text
+                      style={[
+                        styles.deleteText,
+                        { color: theme.colors.onError },
+                      ]}
+                    >
+                      Delete
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              >
                 <TouchableOpacity
                   style={[
-                    styles.deleteButton,
-                    { backgroundColor: theme.colors.error },
+                    styles.exerciseItem,
+                    {
+                      borderBottomColor: theme.colors.outline,
+                      backgroundColor: theme.colors.surface,
+                    },
                   ]}
-                  onPress={() =>
-                    handleDeleteExercise(
-                      db,
-                      item.name,
-                      item.id!,
-                      selectedMuscle,
-                      selectedEquipment,
-                      setExercises,
-                      setLoading,
-                    )
-                  }
+                  onPress={() => handleViewExercise(item.id!)}
                 >
                   <Text
-                    style={[styles.deleteText, { color: theme.colors.onError }]}
+                    style={[
+                      styles.exerciseName,
+                      { color: theme.colors.onSurface },
+                    ]}
                   >
-                    Delete
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.exerciseDetails,
+                      { color: theme.colors.onSurfaceVariant },
+                    ]}
+                  >
+                    {[
+                      item.primary_muscle,
+                      item.secondary_muscle,
+                      item.equipment,
+                    ]
+                      .filter(Boolean)
+                      .join(" • ")}
                   </Text>
                 </TouchableOpacity>
-              )}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.exerciseItem,
-                  {
-                    borderBottomColor: theme.colors.outline,
-                    backgroundColor: theme.colors.surface,
-                  },
-                ]}
-                onPress={() => handleViewExercise(item.id!)}
-              >
-                <Text
-                  style={[
-                    styles.exerciseName,
-                    { color: theme.colors.onSurface },
-                  ]}
-                >
-                  {item.name}
-                </Text>
-                <Text
-                  style={[
-                    styles.exerciseDetails,
-                    { color: theme.colors.onSurfaceVariant },
-                  ]}
-                >
-                  {item.muscle} • {item.equipment}
-                </Text>
-              </TouchableOpacity>
-            </Swipeable>
-          ))}
+              </Swipeable>
+            );
+          })}
         </ScrollView>
       )}
     </View>
