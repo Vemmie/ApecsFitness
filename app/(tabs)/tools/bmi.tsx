@@ -1,7 +1,7 @@
 import ThemedAppHeader from "@/components/ThemedAppHeader";
 import { calculateBMI } from "@/utils/calculateBMI";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { isValidPositiveNumberInput } from "../../../utils/isValidPositiveNumberInput";
@@ -13,6 +13,50 @@ const BmiCalc = () => {
 
   const theme = useTheme();
   const router = useRouter();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          backgroundColor: theme.colors.surface,
+        },
+        contents: {
+          padding: 32,
+          paddingTop: 64,
+        },
+        input: {
+          borderWidth: 2,
+          borderColor: theme.colors.primary,
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 16,
+          backgroundColor: theme.colors.background,
+          color: theme.colors.onSurface,
+        },
+        errorText: {
+          color: theme.colors.error,
+          marginBottom: 16,
+        },
+        resultContainer: {
+          marginTop: 24,
+          alignItems: "center",
+          padding: 16,
+          borderRadius: 12,
+          backgroundColor: theme.colors.secondaryContainer,
+        },
+        resultText: {
+          fontWeight: "bold",
+          fontSize: 18,
+          color: theme.colors.onSecondaryContainer,
+        },
+        categoryText: {
+          marginTop: 8,
+          color: theme.colors.onSecondaryContainer,
+        },
+      }),
+    [theme],
+  );
 
   useEffect(() => {
     // 1. Validate Weight
@@ -49,14 +93,19 @@ const BmiCalc = () => {
     }
   };
 
-  const goBack = () => router.navigate("..");
+  const getBMICategory = (bmi: number) => {
+    if (bmi < 18.5) return "Underweight";
+    if (bmi < 25) return "Normal weight";
+    if (bmi < 30) return "Overweight";
+    return "Obese";
+  };
 
   return (
     <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
       <ThemedAppHeader
         title="BMI Calculator"
         showBackButton
-        onBackPress={goBack}
+        onBackPress={() => router.back()}
       />
 
       <ScrollView contentContainerStyle={styles.contents}>
@@ -64,7 +113,7 @@ const BmiCalc = () => {
         <TextInput
           style={styles.input}
           placeholder="Weight (lbs)"
-          placeholderTextColor="#9b8cff"
+          placeholderTextColor={theme.colors.onSurfaceVariant}
           keyboardType="numeric"
           value={bmiData.weight}
           onChangeText={(text) =>
@@ -76,7 +125,7 @@ const BmiCalc = () => {
         <TextInput
           style={styles.input}
           placeholder="Height (in)"
-          placeholderTextColor="#9b8cff"
+          placeholderTextColor={theme.colors.onSurfaceVariant}
           keyboardType="numeric"
           value={bmiData.height}
           onChangeText={(text) =>
@@ -85,53 +134,20 @@ const BmiCalc = () => {
         />
 
         {error && (
-          <Text style={{ color: "red" }}>
+          <Text style={styles.errorText}>
             Weight and height must be positive numbers.
           </Text>
         )}
 
-        {result > 0 && !error && (
+        {result !== null && !error && (
           <View style={styles.resultContainer}>
-            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-              Your BMI: {result.toFixed(1)}
-            </Text>
-            <Text style={{ marginTop: 8 }}>{getBMICategory(result)}</Text>
+            <Text style={styles.resultText}>Your BMI: {result.toFixed(1)}</Text>
+            <Text style={styles.categoryText}>{getBMICategory(result)}</Text>
           </View>
         )}
       </ScrollView>
     </View>
   );
 };
-
-// Optional helper for UX
-const getBMICategory = (bmi: number) => {
-  if (bmi < 18.5) return "Underweight";
-  if (bmi < 25) return "Normal weight";
-  if (bmi < 30) return "Overweight";
-  return "Obese";
-};
-
-const styles = StyleSheet.create({
-  contents: {
-    padding: 32,
-    paddingTop: 64,
-  },
-  input: {
-    borderWidth: 2,
-    borderColor: "#7B61FF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    backgroundColor: "#f3eaff",
-    color: "black",
-  },
-  resultContainer: {
-    marginTop: 24,
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "#b6a6a6",
-  },
-});
 
 export default BmiCalc;
