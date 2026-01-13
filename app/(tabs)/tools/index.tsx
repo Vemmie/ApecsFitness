@@ -1,49 +1,42 @@
-import ThemedAppHeader from "@/components/ThemedAppHeader";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Link } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Pressable, ScrollView, Text } from "react-native";
+import { useTheme } from "react-native-paper";
+import { FontAwesome6 } from "@expo/vector-icons";
+import Link from "expo-router/build/components/Link";
 
-export default function Tools() {
+// Define your tools in an array for easy management
+const tools = [
+  {
+    name: "One Rep Calculator",
+    href: "/(tabs)/tools/onerep",
+    icon: "calculator",
+  },
+  {
+    name: "BMI Calculator",
+    href: "/(tabs)/tools/bmi",
+    icon: "scale",
+  },
+  {
+    name: "DOTs Calculator",
+    href: "/(tabs)/tools/dotsscreen",
+    icon: "trophy",
+  },
+];
+
+const ToolLinks = () => {
   const theme = useTheme();
+
   return (
-    <View style={{ backgroundColor: theme.colors.surface, flexGrow: 1 }}>
-      <ThemedAppHeader title="Tools" showBackButton={false} />
-      <ScrollView style={styles.contents}>
-        <Text style={[styles.text, { color: theme.colors.primary }]}>
-          Select:
-        </Text>
-        <Link href="/(tabs)/tools/onerep" push asChild>
-          <Pressable style={{ flexDirection: "row", alignItems: "center" }}>
-            <FontAwesome6
-              name="calculator"
-              size={24}
-              color={theme.colors.primary}
-            />
-            <Text
-              style={{
-                marginTop: 4,
-                paddingLeft: 10,
-                color: theme.colors.secondary,
-              }}
-            >
-              One Rep Calculator
-            </Text>
-          </Pressable>
-        </Link>
-        <Link href="/(tabs)/tools/bmi" push asChild>
+    <ScrollView>
+      {tools.map((tool) => (
+        <Link key={tool.href} href={tool.href} push asChild>
           <Pressable
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingTop: 4,
+              marginTop: 12,
             }}
           >
-            <FontAwesome6
-              name="calculator"
-              size={24}
-              color={theme.colors.primary}
-            />
+            <FontAwesome6 name={tool.icon} size={24} color={theme.colors.primary} />
             <Text
               style={{
                 marginTop: 4,
@@ -51,16 +44,13 @@ export default function Tools() {
                 color: theme.colors.secondary,
               }}
             >
-              BMI Calculator
+              {tool.name}
             </Text>
           </Pressable>
         </Link>
-      </ScrollView>
-    </View>
+      ))}
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  contents: { flexGrow: 1, padding: 32, paddingTop: 64 },
-  text: { fontWeight: "bold", paddingBottom: 16, fontSize: 24 },
-});
+export default ToolLinks;
