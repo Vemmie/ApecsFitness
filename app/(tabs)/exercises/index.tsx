@@ -4,6 +4,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
+import { useIsFocused } from "@react-navigation/native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -34,6 +35,7 @@ const Index = () => {
   const theme = useTheme();
   const db = useSQLiteContext();
   const router = useRouter();
+  const isFocused = useIsFocused();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,7 +154,9 @@ const Index = () => {
                         styles.editButton,
                         { backgroundColor: theme.colors.primaryContainer },
                       ]}
-                      onPress={() => router.push(`/exercises/edit/${item.id}`)}
+                      onPress={() =>
+                        router.push(`/exercises/${item.id}/editExercise`)
+                      }
                     >
                       <Text
                         style={[
@@ -235,7 +239,7 @@ const Index = () => {
         {/* 2. POSITIONED FLOATING FILTER BUBBLE */}
         <Portal>
           {/* Logic: Hide FAB if the bottom sheet is open (isSheetOpen === true) */}
-          {!isSheetOpen && (
+          {isFocused && !isSheetOpen && (
             <FAB
               icon="filter"
               onPress={handleOpenFilters}
