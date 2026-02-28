@@ -154,7 +154,9 @@ const Index = () => {
                         styles.editButton,
                         { backgroundColor: theme.colors.primaryContainer },
                       ]}
-                      onPress={() => router.push(`/exercises/edit/${item.id}`)}
+                      onPress={() =>
+                        router.push(`/exercises/${item.id}/editExercise`)
+                      }
                     >
                       <Text
                         style={[

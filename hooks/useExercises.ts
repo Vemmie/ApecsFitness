@@ -65,6 +65,13 @@ export const handleDeleteExercise = async (
 export const handleCreate = () =>
   router.navigate("/(tabs)/exercises/createExercise");
 
+export const handleEdit = (id: number) => {
+  router.push({
+    pathname: "/(tabs)/exercises/[id]/editExercise",
+    params: { id },
+  });
+};
+
 export const handleViewExercise = (id: number) => {
   router.push({
     pathname: "/(tabs)/exercises/[id]",
