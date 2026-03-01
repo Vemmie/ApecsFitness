@@ -12,6 +12,8 @@ enum MuscleEnum {
   CALVES = "Calves",
   GLUTES = "Glutes",
   ABS = "Abs",
+  CARDIO = "Cardio",
+  MISC = "Misc",
   HIP_FLEXORS = "Hip Flexors",
   NONE = "None",
 }

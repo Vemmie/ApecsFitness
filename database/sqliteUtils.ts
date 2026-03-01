@@ -5,7 +5,6 @@ import { migrationsList } from "./migrations/migrationList";
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   // Reset version for testing and table dropping
-
   /*
   console.debug("Dropping all tables...");
 
@@ -21,6 +20,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
   let currVersion = 0;
   console.debug("Reset DB to version 0");
+
   */
 
   const result = await db.getFirstAsync<{ user_version: number }>(
@@ -28,6 +28,10 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   );
 
   let currVersion = result?.user_version ?? 0;
+
+  // 1. ENABLE FOREIGN KEY ENFORCEMENT
+  // This must be run every time the DB connection opens
+  await db.execAsync("PRAGMA foreign_keys = ON;");
 
   console.debug("Current DB version:", currVersion);
 
