@@ -6,7 +6,7 @@
 
 ## 🚀 Core Features
 
-**Note:** Please check the sql scheme provided in the repo as well.
+**Note:** Please check the sql scheme and demo provided below
 
 ### 1. Exercise Management
 
@@ -50,3 +50,6 @@
 - **Visual Analytics**: Graphical representation of strength and endurance trends.
 - **Personal Records (PRs)**: Automated highlighting of all-time best lifts.
 - **LLM ChatBOT**: In the future add the prototype fitness buddy into the app tool seciont.
+
+![App Screenshot](./database/sql/DB_ERD.png)
+![Demo](./assets/ApecsDemo.gif)

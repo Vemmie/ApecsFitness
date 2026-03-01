@@ -1,6 +1,6 @@
 import ThemedAppHeader from "@/components/ThemedAppHeader";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
+import { Link, useRouter, Href } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -8,7 +8,8 @@ import { useTheme } from "react-native-paper";
 type ToolHref =
   | "/(tabs)/tools/onerep"
   | "/(tabs)/tools/bmi"
-  | "/(tabs)/tools/dotsscreen";
+  | "/(tabs)/tools/dotsscreen"
+  | "/(tabs)/tools/chat"; // Added chat route
 
 const tools: { name: string; href: ToolHref; icon: string }[] = [
   {
@@ -18,6 +19,11 @@ const tools: { name: string; href: ToolHref; icon: string }[] = [
   },
   { name: "BMI Calculator", href: "/(tabs)/tools/bmi", icon: "weight-scale" },
   { name: "DOTs Calculator", href: "/(tabs)/tools/dotsscreen", icon: "trophy" },
+  { 
+    name: "Apecs AI Coach", 
+    href: "/(tabs)/tools/chat", 
+    icon: "robot" // Added AI Coach
+  },
 ];
 
 const IndexPage = () => {
@@ -27,7 +33,7 @@ const IndexPage = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.surface }}>
       <ThemedAppHeader
-        title="Tools" // The title for this screen
+        title="Tools"
       />
       <Text
         style={{
@@ -41,7 +47,7 @@ const IndexPage = () => {
       </Text>
       <ScrollView>
         {tools.map((tool) => (
-          <Link key={tool.href} href={tool.href} push asChild>
+          <Link key={tool.href} href={tool.href as Href} push asChild>
             <Pressable
               style={{
                 flexDirection: "row",
@@ -49,7 +55,6 @@ const IndexPage = () => {
                 margin: 8,
                 padding: 12,
                 borderRadius: 8,
-                // Press feedback handled by opacity below
               }}
             >
               <FontAwesome6
