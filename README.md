@@ -5,7 +5,7 @@
 ---
 
 ## 📱 Demo
-![Apecs App Demo](./Apecs/static/ApecsDemo.gif)
+![Apecs App Demo](./static/ApecsDemo.gif)
 
 ---
 
@@ -31,7 +31,7 @@
 ## 🛠 Engineering & Tech Stack
 
 ### Database Schema (ERD)
-![Database Entity Relationship Diagram](./Apecs/static/DB_ERD.png)
+![Database Entity Relationship Diagram](./static/DB_ERD.png)
 
 - **Framework**: React Native with Expo Router
 - **Database**: `expo-sqlite` with Drizzle ORM
