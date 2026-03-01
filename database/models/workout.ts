@@ -274,3 +274,54 @@ export const deleteWorkout = async (db: SQLiteDatabase, id: number) => {
     await stmt.finalizeAsync();
   }
 };
+
+export const updateWorkout = async (
+  db: SQLiteDatabase,
+  workoutId: number,
+  data: { name: string; description: string; exercises: any[] },
+) => {
+  // Start a transaction
+  await db.withTransactionAsync(async () => {
+    // 1. Update the main workout record
+    await db.runAsync(
+      `UPDATE Workouts SET name = ?, description = ? WHERE id = ?`,
+      [data.name, data.description, workoutId],
+    );
+
+    // 2. Remove all existing exercises for this workout
+    await db.runAsync(`DELETE FROM Workout_Exercises WHERE workoutId = ?`, [
+      workoutId,
+    ]);
+
+    // 3. Re-insert the updated list of exercises
+    for (let i = 0; i < data.exercises.length; i++) {
+      const ex = data.exercises[i];
+      // Note: Reusing your logic for record types (simplified here)
+      const sets = ex.record_type === RecordType.TIME ? null : ex.sets || 3;
+      const reps = ex.record_type === RecordType.TIME ? null : ex.reps || 10;
+      const duration =
+        ex.record_type === RecordType.TIME ? ex.duration || 30 : 0;
+
+      await db.runAsync(
+        `INSERT INTO Workout_Exercises (workoutId, exerciseId, orderIndex, sets, reps, duration)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [workoutId, ex.exerciseId, i, sets, reps, duration],
+      );
+    }
+  });
+};
+
+// Helper to fetch a single workout with its joined exercises
+export const fetchWorkoutById = async (
+  db: SQLiteDatabase,
+  id: number,
+): Promise<WorkoutWithExercises | null> => {
+  const rows = await db.getAllAsync<WorkoutExerciseInfoRow>(
+    `${getWorkoutExerciseInfo.replace("ORDER BY", "WHERE w.id = ? ORDER BY")}`,
+    [id],
+  );
+
+  if (rows.length === 0) return null;
+  const workouts = mapWorkoutExerciseInfo(rows);
+  return workouts[0];
+};

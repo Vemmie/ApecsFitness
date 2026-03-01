@@ -1,7 +1,14 @@
 import ThemedAppHeader from "@/components/ThemedAppHeader";
 import { fetchWorkouts } from "@/database/models/workout";
-import { handleDeleteWorkout } from "@/hooks/useWorkouts";
-import { useFocusEffect, useRouter } from "expo-router";
+// Import your utilities (ensure the path matches where you saved the previous snippet)
+import {
+  handleCreateWorkout,
+  handleDeleteWorkout,
+  handleEditWorkout,
+  handleViewWorkout,
+} from "@/hooks/useWorkouts";
+
+import { useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React, { useCallback, useState } from "react";
 import {
@@ -19,16 +26,13 @@ import { useTheme } from "react-native-paper";
 const ViewWorkouts = () => {
   const theme = useTheme();
   const db = useSQLiteContext();
-  const router = useRouter();
 
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. Define the fetcher logic once
+  // Fetcher logic
   const fetchData = useCallback(async () => {
-    // Only show the big spinner if we don't have data yet
     if (workouts.length === 0) setLoading(true);
-
     try {
       const results = await fetchWorkouts(db);
       setWorkouts(results);
@@ -39,35 +43,16 @@ const ViewWorkouts = () => {
     }
   }, [db, workouts.length]);
 
-  // Using Focus Effect because you add it doesn't rerender new list
+  // Refresh when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchData();
     }, [fetchData]),
   );
 
-  const handleCreate = () => {
-    router.push("/workouts/createWorkout");
-  };
-
-  const handleEdit = (id: number) => {
-    router.push(`/workouts/edit/${id}`);
-  };
-
-  const handleView = (id: number) => {
-    router.push({
-      pathname: "/(tabs)/workouts/[id]",
-      params: { id },
-    });
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await handleDeleteWorkout(db, id);
-      setWorkouts((prev) => prev.filter((w) => w.id !== id));
-    } catch (error) {
-      console.error(error);
-    }
+  // Wrapper for delete to handle the local state update
+  const onDeleteComplete = (id: number) => {
+    setWorkouts((prev) => prev.filter((w) => w.id !== id));
   };
 
   return (
@@ -76,7 +61,7 @@ const ViewWorkouts = () => {
         <ThemedAppHeader
           title="Workouts"
           rightIcon="plus"
-          rightIconOnPress={handleCreate}
+          rightIconOnPress={handleCreateWorkout}
         />
 
         {loading ? (
@@ -95,7 +80,7 @@ const ViewWorkouts = () => {
                         styles.editButton,
                         { backgroundColor: theme.colors.primaryContainer },
                       ]}
-                      onPress={() => handleEdit(workout.id)}
+                      onPress={() => handleEditWorkout(workout.id)}
                     >
                       <Text
                         style={[
@@ -112,7 +97,11 @@ const ViewWorkouts = () => {
                         styles.deleteButton,
                         { backgroundColor: theme.colors.error },
                       ]}
-                      onPress={() => handleDelete(workout.id)}
+                      onPress={() =>
+                        handleDeleteWorkout(db, workout.id, workout.name, () =>
+                          onDeleteComplete(workout.id),
+                        )
+                      }
                     >
                       <Text
                         style={[
@@ -131,7 +120,7 @@ const ViewWorkouts = () => {
                     styles.workoutItem,
                     { borderBottomColor: theme.colors.outline },
                   ]}
-                  onPress={() => handleView(workout.id)}
+                  onPress={() => handleViewWorkout(workout.id)}
                 >
                   <Text
                     style={[
@@ -179,13 +168,6 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   actionText: { fontWeight: "600" },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 8,
-    bottom: 80,
-    borderRadius: 30,
-  },
 });
 
 export default ViewWorkouts;
