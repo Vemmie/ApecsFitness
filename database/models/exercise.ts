@@ -17,7 +17,7 @@ export type Exercise = {
 // Queries
 const insertExerciseQuery = `
   INSERT INTO ${tableName} (name, primary_muscle, secondary_muscle, equipment, record_type)
-  VALUES ($name, $primary_muscle, $secondary_muscle, $equipment, $recordType)
+  VALUES ($name, $primary_muscle, $secondary_muscle, $equipment, $record_type)
 `;
 
 function selectExercisesFilteredQuery(
