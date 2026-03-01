@@ -8,7 +8,7 @@ import { insertExercise } from "@/database/models/exercise";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View, Alert } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   RadioButton,
@@ -129,11 +129,6 @@ const CreateExercise = () => {
             <RadioButton.Item
               label={RecordType.WEIGHT_AND_REPS}
               value={RecordType.WEIGHT_AND_REPS}
-              style={styles.radioButtonItem}
-            />
-            <RadioButton.Item
-              label={RecordType.REPS}
-              value={RecordType.REPS}
               style={styles.radioButtonItem}
             />
             <RadioButton.Item

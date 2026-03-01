@@ -1,1 +1,52 @@
 # Apecs
+
+**Apecs** is a fitness tracking application designed for users who want to keep track of data. Built with **React Native** and a robust **SQLite** backend, Apecs ensures your data stays local, fast, and secure.
+
+---
+
+## 🚀 Core Features
+
+**Note:** Please check the sql scheme provided in the repo as well.
+
+### 1. Exercise Management
+
+- **Custom Exercise Creation**: Define exercises with specific metadata including primary muscle, secondary muscle, and equipment.
+- **UI**: Automatically hides "Other" or "None" placeholders in headers to keep the interface focused on relevant anatomy.
+- **Dynamic Record Types**: Supports tracking by **Weight and Reps** or **Time** (seconds) depending on the exercise needs.
+
+### 2. Structured Workout Architecture
+
+- **Routine Builder**: Organize multiple exercises into structured workouts with defined sets, reps, and order.
+- **Relational Integrity**: Uses a many-to-many relationship to link single exercises across multiple different workout routines.
+- **Database Safety**: Integrated `ON DELETE CASCADE` logic ensures that deleting an exercise automatically cleans up associated workout links and logs.
+
+### 3. History
+
+- **Flexible Logging**: Create "Freestyle" logs or link them directly to a specific workout routine.
+- **Interactive History**: View a chronological history of every set performed for a specific exercise.
+- **Swipe-to-Action**: Intuitive slide gestures allow you to **Edit** or **Delete** individual log entries directly from the history list.
+- **Contextual Labels**: See which workout routine a log belonged to at a glance with integrated labels.
+
+### 4. Engineering Choices for the DB SQLite
+
+- **Local SQLite Storage**: Fast, offline-capable, and lightweight data retrieval using `expo-sqlite`.
+- **Automated Migrations**: A version-controlled migration system handles database schema updates automatically as the app evolves.
+- **Foreign Key Enforcement**: Uses `PRAGMA foreign_keys = ON` to maintain strict referential integrity.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework**: React Native with Expo Router
+- **Database**: Expo-SQLite
+- **UI Library**: React Native Paper
+- **Gestures**: React Native Gesture Handler & Reanimated
+- **Backend**: Simulated through models / Node.js Express
+
+---
+
+## 📈 Future Roadmap
+
+- **Visual Analytics**: Graphical representation of strength and endurance trends.
+- **Personal Records (PRs)**: Automated highlighting of all-time best lifts.
+- **LLM ChatBOT**: In the future add the prototype fitness buddy into the app tool seciont.

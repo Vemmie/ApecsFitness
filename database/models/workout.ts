@@ -107,25 +107,21 @@ export const getWorkoutExerciseInfo = `
     w.id               AS workoutId,
     w.name             AS workoutName,
     w.description      AS workoutDescription,
-
     we.id              AS workoutExerciseId,
     we.orderIndex,
     we.sets,
     we.reps,
     we.duration,
-
     e.id               AS exerciseId,
     e.name             AS exerciseName,
     e.primary_muscle   AS primaryMuscle,
     e.secondary_muscle AS secondaryMuscle,
     e.record_type      AS recordType
-
   FROM ${WorkoutsTable} w
-  JOIN ${WorkoutExercisesTable} we
+  INNER JOIN ${WorkoutExercisesTable} we -- Use INNER to link only existing entries
     ON we.workoutId = w.id
-  JOIN ${ExercisesTable} e
+  INNER JOIN ${ExercisesTable} e        -- If 'e' is deleted, this row will now vanish
     ON e.id = we.exerciseId
-
   ORDER BY w.id, we.orderIndex;
 `;
 
@@ -169,11 +165,6 @@ export const insertWorkoutExercise = async (
 
   switch (exerciseRow.record_type as RecordType) {
     case RecordType.WEIGHT_AND_REPS:
-      sets = exercise.sets ?? 3;
-      reps = exercise.reps ?? 10;
-      duration = 0;
-      break;
-    case RecordType.REPS:
       sets = exercise.sets ?? 3;
       reps = exercise.reps ?? 10;
       duration = 0;
@@ -252,7 +243,7 @@ export const fetchWorkoutsWithExercises = async (
     const rows = await db.getAllAsync<WorkoutExerciseInfoRow>(
       getWorkoutExerciseInfo,
     );
-
+    console.log("Raw DB Rows:", rows.length); // If this number is higher than expected, the JOIN isn't filtering
     return mapWorkoutExerciseInfo(rows);
   } catch (error) {
     console.error("Error fetching workouts with exercises:", error);
